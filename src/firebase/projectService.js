@@ -7,9 +7,14 @@ import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, u
  */
 export const addProject = async (projectData) => {
     try {
+        const user = auth.currentUser;
+        if (!user || !user.uid) {
+            throw new Error("User must be authenticated to create a project.");
+        }
+
         const docRef = await addDoc(collection(db, "projects"), {
             ...projectData,
-            userId: auth.currentUser?.uid,
+            userId: user.uid,
             createdAt: serverTimestamp(),
         });
         return docRef.id;
