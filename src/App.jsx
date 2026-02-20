@@ -41,6 +41,22 @@ const App = () => {
     return () => unsubscribe();
   }, []);
 
+  // Simple /auth prefix logic
+  useEffect(() => {
+    if (!loading) {
+      const path = window.location.pathname;
+      if (!user) {
+        if (!path.startsWith('/auth')) {
+          window.history.replaceState(null, '', '/auth/login');
+        }
+      } else if (user && hasAcceptedTerms !== false && hasAcceptedTerms !== null) {
+        if (path.startsWith('/auth')) {
+          window.history.replaceState(null, '', '/dashboard');
+        }
+      }
+    }
+  }, [user, loading, hasAcceptedTerms]);
+
   // Fetch project details when ID changes or on init
   useEffect(() => {
     const fetchProject = async () => {
@@ -94,6 +110,7 @@ const App = () => {
     }
   };
 
+  // 1: Loading state while fetching auth OR while checking premium/terms status for a logged-in user
   if (loading || (user && (premiumLoading || hasAcceptedTerms === null))) {
     return (
       <div className="min-h-screen bg-[var(--bg-mesh-4)] flex items-center justify-center">
@@ -105,13 +122,24 @@ const App = () => {
     );
   }
 
+  // 2: Guest Logic. Guests MUST ONLY see Auth screens. No policy modal ever.
   if (!user) {
-    return <Auth />;
+    return (
+      <>
+        <Auth />
+        {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      </>
+    );
   }
 
-  // Legal Gate: Block everything if user exists but hasn't accepted terms
+  // 3: User Logic. Logged in, but hasn't accepted terms yet. Block dashboard, show modal.
   if (user && hasAcceptedTerms === false) {
-    return <TermsModal user={user} language={language} showToast={showToast} onAccept={() => setHasAcceptedTerms(true)} />;
+    return (
+      <>
+        <TermsModal user={user} language={language} showToast={showToast} onAccept={() => setHasAcceptedTerms(true)} />
+        {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      </>
+    );
   }
 
   return (
