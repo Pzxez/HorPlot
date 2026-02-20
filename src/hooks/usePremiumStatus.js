@@ -5,14 +5,14 @@ import { doc, onSnapshot } from 'firebase/firestore';
 export const usePremiumStatus = (user) => {
     const [isPremium, setIsPremium] = useState(false);
     const [purchasedFeatures, setPurchasedFeatures] = useState([]);
-    const [hasAcceptedTerms, setHasAcceptedTerms] = useState(true); // Default to true to avoid modal flicker
+    const [hasAcceptedTerms, setHasAcceptedTerms] = useState(null); // Default to null to represent fetching state
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (!user) {
             setIsPremium(false);
             setPurchasedFeatures([]);
-            setHasAcceptedTerms(true);
+            setHasAcceptedTerms(null);
             setLoading(false);
             return;
         }
@@ -38,5 +38,5 @@ export const usePremiumStatus = (user) => {
         return () => unsubscribe();
     }, [user?.uid]);
 
-    return { isPremium, purchasedFeatures, hasAcceptedTerms, loading };
+    return { isPremium, purchasedFeatures, hasAcceptedTerms, setHasAcceptedTerms, loading };
 };

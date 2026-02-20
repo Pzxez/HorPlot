@@ -3,7 +3,7 @@ import SignatureCanvas from 'react-signature-canvas';
 import { Shield, FileText, Check, Eraser, Loader2 } from 'lucide-react';
 import { updateUserTerms } from '../firebase/userService';
 
-const TermsModal = ({ user, language, showToast }) => {
+const TermsModal = ({ user, language, showToast, onAccept }) => {
     const sigCanvas = useRef(null);
     const contentRef = useRef(null);
     const [isSigned, setIsSigned] = useState(false);
@@ -38,6 +38,7 @@ const TermsModal = ({ user, language, showToast }) => {
             }
             await updateUserTerms(user.uid, signatureBase64);
             showToast(language === 'TH' ? 'ยอมรับเงื่อนไขเรียบร้อยแล้ว' : 'Agreement Signed Successfully');
+            if (onAccept) onAccept();
         } catch (error) {
             console.error(error);
             showToast(language === 'TH' ? 'เกิดข้อผิดพลาดในการบันทึก' : 'Error saving agreement', 'error');

@@ -26,7 +26,7 @@ const App = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [toast, setToast] = useState(null);
 
-  const { isPremium, purchasedFeatures, hasAcceptedTerms, loading: premiumLoading } = usePremiumStatus(user);
+  const { isPremium, purchasedFeatures, hasAcceptedTerms, setHasAcceptedTerms, loading: premiumLoading } = usePremiumStatus(user);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -94,7 +94,7 @@ const App = () => {
     }
   };
 
-  if (loading || (user && premiumLoading)) {
+  if (loading || (user && (premiumLoading || hasAcceptedTerms === null))) {
     return (
       <div className="min-h-screen bg-[var(--bg-mesh-4)] flex items-center justify-center">
         <div className="animate-pulse flex flex-col items-center">
@@ -110,8 +110,8 @@ const App = () => {
   }
 
   // Legal Gate: Block everything if user exists but hasn't accepted terms
-  if (user && !hasAcceptedTerms) {
-    return <TermsModal user={user} language={language} showToast={showToast} />;
+  if (user && hasAcceptedTerms === false) {
+    return <TermsModal user={user} language={language} showToast={showToast} onAccept={() => setHasAcceptedTerms(true)} />;
   }
 
   return (
