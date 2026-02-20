@@ -1,5 +1,5 @@
 import { db } from "./config";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 /**
  * Updates the user's terms acceptance status and signature.
@@ -9,11 +9,11 @@ import { doc, updateDoc } from "firebase/firestore";
 export const updateUserTerms = async (uid, signatureBase64) => {
     try {
         const userRef = doc(db, 'users', uid);
-        await updateDoc(userRef, {
+        await setDoc(userRef, {
             hasAcceptedTerms: true,
             signatureData: signatureBase64,
             acceptedAt: new Date().toISOString()
-        });
+        }, { merge: true });
         return true;
     } catch (error) {
         console.error("Error updating user terms:", error);

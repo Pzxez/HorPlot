@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, CheckCircle2, Zap, Layout, ShieldCheck } from 'lucide-react';
+import { X, CheckCircle2, Zap, Layout, ShieldCheck, Lock } from 'lucide-react';
 
 const ChangelogModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null;

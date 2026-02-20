@@ -60,10 +60,10 @@ const UserProfile = () => {
             {/* Trigger Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="p-2.5 xl:p-3.5 rounded-2xl text-muted hover:text-accent-primary hover:bg-accent-primary/5 transition-all outline-none"
+                className="p-2.5 rounded-2xl text-muted hover:text-accent-primary hover:bg-accent-primary/5 transition-all outline-none"
                 title="Profile"
             >
-                <User className="w-5 h-5 xl:w-6 xl:h-6" />
+                <User className="w-5 h-5" />
             </button>
 
             {/* Backdrop for Mobile/Closing */}

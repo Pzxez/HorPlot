@@ -75,19 +75,19 @@ const Navbar = ({ activeTab, setActiveTab, language, setLanguage, selectedProjec
     return (
         <>
             <nav className="sticky top-0 w-full z-[80] backdrop-blur-md bg-white/70 border-b border-glass-stroke transition-all duration-300">
-                <div className="max-w-[90rem] mx-auto px-8 py-4 min-h-[100px] flex items-center justify-between">
+                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                     {/* Brand & Active Badge */}
                     <div className="flex items-center space-x-4 xl:space-x-8 shrink-0">
                         <button
                             onClick={() => setActiveTab('dashboard')}
                             className="flex items-center space-x-3 group active:scale-95 transition-transform"
                         >
-                            <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-2xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center shadow-lg shadow-accent-primary/20 rotate-12 group-hover:rotate-0 transition-transform duration-500 shrink-0">
-                                <GitCommit className="text-white w-6 h-6 xl:w-7 xl:h-7 rotate-90" />
+                            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center shadow-lg shadow-accent-primary/20 rotate-12 group-hover:rotate-0 transition-transform duration-500 shrink-0">
+                                <GitCommit className="text-white w-6 h-6 rotate-90" />
                             </div>
                             <div className="hidden sm:block text-left shrink-0">
-                                <h2 className="text-2xl xl:text-3xl font-black tracking-tight text-gradient leading-none whitespace-nowrap">HorPlot | หอพล็อต</h2>
-                                <p className="text-[9px] xl:text-[10px] font-bold text-muted uppercase tracking-[0.2em] mt-1 xl:mt-1.5 opacity-60">หอพักนักเขียน</p>
+                                <h2 className="text-2xl font-black tracking-tight text-gradient leading-none whitespace-nowrap">HorPlot | หอพล็อต</h2>
+                                <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em] mt-1 opacity-60">หอพักนักเขียน</p>
                             </div>
                         </button>
 
@@ -103,29 +103,29 @@ const Navbar = ({ activeTab, setActiveTab, language, setLanguage, selectedProjec
                     </div>
 
                     {/* Desktop Nav */}
-                    <div className="hidden lg:flex items-center space-x-1 xl:space-x-4">
+                    <div className="hidden lg:flex items-center space-x-2">
                         {filteredNavItems.map((item) => (
                             <button
                                 key={item.id}
                                 onClick={() => handleTabClick(item.id)}
-                                className={`px-3 xl:px-6 py-2 xl:py-3 rounded-2xl font-bold text-xs xl:text-[15px] transition-all duration-300 relative group flex items-center space-x-2 xl:space-x-3 whitespace-nowrap ${activeTab === item.id
-                                    ? 'bg-accent-primary text-white shadow-lg xl:shadow-xl shadow-accent-primary/20 scale-100 xl:scale-105'
+                                className={`px-4 py-2 rounded-2xl font-bold text-sm transition-all duration-300 relative group flex items-center space-x-2 whitespace-nowrap ${activeTab === item.id
+                                    ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/20 scale-100'
                                     : (item.guard && !selectedProjectId)
                                         ? 'opacity-40 hover:opacity-100'
-                                        : 'text-muted hover:text-accent-primary hover:bg-accent-primary/5 hover:scale-100 xl:hover:scale-105'
+                                        : 'text-muted hover:text-accent-primary hover:bg-accent-primary/5 hover:scale-100'
                                     }`}
                             >
-                                <item.icon className={`w-4 h-4 xl:w-5 xl:h-5 ${activeTab === item.id ? 'opacity-100' : 'opacity-50'}`} />
+                                <item.icon className={`w-4 h-4 ${activeTab === item.id ? 'opacity-100' : 'opacity-50'}`} />
                                 <span>{item.label}</span>
                                 {activeTab === item.id && (
-                                    <div className="absolute -bottom-2 xl:-bottom-3 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-accent-primary shadow-lg shadow-accent-primary animate-pulse" />
+                                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-accent-primary shadow-lg shadow-accent-primary animate-pulse" />
                                 )}
                             </button>
                         ))}
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center space-x-2 md:space-x-3 xl:space-x-6 shrink-0">
+                    <div className="flex items-center space-x-3 shrink-0">
                         <div className="hidden lg:block">
                             <PremiumDropdown
                                 isPremium={isPremium}
@@ -137,13 +137,13 @@ const Navbar = ({ activeTab, setActiveTab, language, setLanguage, selectedProjec
                             />
                         </div>
 
-                        <div className="hidden lg:block h-5 xl:h-6 w-[1px] bg-glass-stroke mx-2 xl:mx-4" />
+                        <div className="hidden lg:block h-5 w-[1px] bg-glass-stroke mx-2" />
 
                         <button
                             onClick={() => setLanguage(language === 'TH' ? 'EN' : 'TH')}
-                            className="hidden lg:flex items-center space-x-2 px-3 xl:px-4 py-2 xl:py-2.5 rounded-2xl bg-black/5 hover:bg-black/10 text-[10px] xl:text-xs font-black uppercase tracking-widest text-muted transition-colors"
+                            className="hidden lg:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-black/5 hover:bg-black/10 text-[10px] font-black uppercase tracking-widest text-muted transition-colors"
                         >
-                            <Globe className="w-4 h-4 xl:w-5 xl:h-5 text-accent-primary" />
+                            <Globe className="w-4 h-4 text-accent-primary" />
                             <span>{language}</span>
                         </button>
 
@@ -151,10 +151,10 @@ const Navbar = ({ activeTab, setActiveTab, language, setLanguage, selectedProjec
 
                         <button
                             onClick={handleLogout}
-                            className="hidden lg:flex p-2.5 xl:p-3.5 rounded-2xl text-muted hover:text-red-500 hover:bg-red-500/5 transition-all"
+                            className="hidden lg:flex p-2.5 rounded-2xl text-muted hover:text-red-500 hover:bg-red-500/5 transition-all"
                             title={currentT.logout}
                         >
-                            <LogOut className="w-5 h-5 xl:w-6 xl:h-6" />
+                            <LogOut className="w-5 h-5" />
                         </button>
 
                         {/* Mobile Menu Toggle */}

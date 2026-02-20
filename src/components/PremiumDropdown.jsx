@@ -57,15 +57,15 @@ const PremiumDropdown = ({ setActiveTab, isPremium, purchasedFeatures, selectedP
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`flex items-center space-x-2 xl:space-x-3 px-4 xl:px-6 py-2 xl:py-3 rounded-2xl font-bold text-xs xl:text-[15px] transition-all duration-300 border-2 ${isOpen
-                    ? 'bg-amber-500 text-white border-amber-500 shadow-xl shadow-amber-500/20 scale-100 xl:scale-105'
-                    : 'glass-card border-transparent text-amber-500 hover:bg-amber-500/5 hover:scale-100 xl:hover:scale-105'
+                className={`flex items-center space-x-2 px-4 py-2 rounded-2xl font-bold text-xs transition-all duration-300 border-2 ${isOpen
+                    ? 'bg-amber-500 text-white border-amber-500 shadow-xl shadow-amber-500/20 scale-100'
+                    : 'glass-card border-transparent text-amber-500 hover:bg-amber-500/5 hover:scale-100'
                     }`}
             >
-                <Sparkles className="w-4 h-4 xl:w-5 xl:h-5" />
+                <Sparkles className="w-4 h-4" />
                 <span className="hidden xl:inline">เครื่องมือพิเศษ</span>
                 <span className="xl:hidden">Premium</span>
-                <ChevronDown className={`w-4 h-4 xl:w-5 xl:h-5 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {isOpen && (
