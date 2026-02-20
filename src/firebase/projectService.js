@@ -62,11 +62,17 @@ export const subscribeToProjects = (callback) => {
         where("userId", "==", auth.currentUser.uid),
         orderBy("createdAt", "desc")
     );
-    return onSnapshot(q, (snapshot) => {
-        const projects = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-        callback(projects);
-    });
+    return onSnapshot(q, {
+        next: (snapshot) => {
+            const projects = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            callback(projects);
+        },
+        error: (error) => {
+            console.error("Error subscribing to projects: ", error);
+            callback([]); // Provide empty data on error to unblock UI
+        }
+    }, { includeMetadataChanges: true });
 };

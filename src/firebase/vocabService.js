@@ -48,7 +48,7 @@ export const subscribeToVocab = (projectId, callback, category = 'all') => {
  */
 export const deleteVocab = async (id) => {
     try {
-        const docRef = doc(db, "vocab_bank", id);
+        const docRef = doc(db, "vocabs", id);
         await deleteDoc(docRef);
     } catch (e) {
         console.error("Error deleting word: ", e);

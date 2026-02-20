@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Book, ArrowRight, Loader2, X, Check, Edit2, Trash2 } from 'lucide-react';
 import { addProject, subscribeToProjects, updateProject, deleteProject } from '../firebase/projectService';
+import { auth, db } from '../firebase/config';
+import { doc, getDoc } from 'firebase/firestore';
 
 const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) => {
     const [projects, setProjects] = useState([]);
@@ -8,6 +10,8 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
     const [isAdding, setIsAdding] = useState(false);
     const [editingProject, setEditingProject] = useState(null);
     const [newTitle, setNewTitle] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
+    const [isPremium, setIsPremium] = useState(false);
 
     const t = {
         TH: {
@@ -43,16 +47,42 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
     const currentT = t[language];
 
     useEffect(() => {
+        // Fallback to stop loading if Firestore takes too long
+        const timeout = setTimeout(() => {
+            setLoading(false);
+        }, 8000);
+
         const unsubscribe = subscribeToProjects((data) => {
+            clearTimeout(timeout);
             setProjects(data);
             setLoading(false);
         });
-        return () => unsubscribe();
-    }, []);
+
+        // Non-blocking premium check
+        const fetchPremiumStatus = async () => {
+            if (!auth.currentUser) return;
+            try {
+                const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+                if (userDoc.exists()) {
+                    setIsPremium(userDoc.data().isPremium || false);
+                }
+            } catch (error) {
+                console.error("Error fetching premium status in Dashboard:", error);
+            }
+        };
+        fetchPremiumStatus();
+
+        return () => {
+            unsubscribe();
+            clearTimeout(timeout);
+        };
+    }, [auth.currentUser?.uid]);
 
     const handleSave = async (e) => {
         if (e) e.preventDefault();
-        if (!newTitle.trim()) return;
+        if (!newTitle.trim() || isSaving) return;
+
+        setIsSaving(true);
         try {
             if (editingProject) {
                 await updateProject(editingProject.id, { title: newTitle });
@@ -67,6 +97,8 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
         } catch (error) {
             console.error(error);
             showToast(language === 'TH' ? 'เกิดข้อผิดพลาดในการบันทึก' : 'Error saving project', 'error');
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -211,9 +243,14 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 bg-accent-primary text-white py-5 rounded-2xl hover:bg-accent-primary/80 shadow-2xl shadow-accent-primary/40 transition-all font-black uppercase tracking-widest flex items-center justify-center space-x-3"
+                                    disabled={isSaving}
+                                    className="flex-1 bg-accent-primary text-white py-5 rounded-2xl hover:bg-accent-primary/80 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl shadow-accent-primary/40 transition-all font-black uppercase tracking-widest flex items-center justify-center space-x-3"
                                 >
-                                    <Check className="w-6 h-6" />
+                                    {isSaving ? (
+                                        <Loader2 className="w-6 h-6 animate-spin" />
+                                    ) : (
+                                        <Check className="w-6 h-6" />
+                                    )}
                                     <span>{editingProject ? currentT.update : currentT.save}</span>
                                 </button>
                             </div>
