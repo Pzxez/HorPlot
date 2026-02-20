@@ -168,7 +168,7 @@ const Characters = ({ language, projectId, showToast }) => {
                                 <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                                 <span className="text-7xl md:text-8xl font-black text-white/5 transition-all duration-700 transform group-hover:scale-110 group-hover:text-white/10">{char.image}</span>
                                 <div className="absolute top-4 right-4 md:top-6 md:right-6">
-                                    <button className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-black/10 backdrop-blur-md hover:bg-black/20 text-white transition-all flex items-center justify-center border border-white/10">
+                                    <button className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-white/40 backdrop-blur-md hover:bg-white/60 text-[var(--text-main)] transition-all flex items-center justify-center border border-white/40 shadow-sm">
                                         <MoreHorizontal className="w-5 h-5" />
                                     </button>
                                 </div>

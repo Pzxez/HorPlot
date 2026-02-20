@@ -32,11 +32,17 @@ export const subscribeToCharacters = (projectId, callback) => {
         where("projectId", "==", projectId),
         orderBy("createdAt", "desc")
     );
-    return onSnapshot(q, (snapshot) => {
-        const characters = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-        callback(characters);
+    return onSnapshot(q, {
+        next: (snapshot) => {
+            const characters = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            callback(characters);
+        },
+        error: (error) => {
+            console.error("Error subscribing to characters:", error);
+            callback([]); // Unblock with empty list
+        }
     });
 };

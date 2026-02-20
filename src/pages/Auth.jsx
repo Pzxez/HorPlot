@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { auth, googleProvider } from '../firebase/config';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../firebase/config';
 import { Mail, Lock, UserPlus, LogIn, Loader2, AlertCircle, Chrome, Apple, Info } from 'lucide-react';
 
 const Auth = () => {
@@ -18,7 +20,13 @@ const Auth = () => {
             if (isLogin) {
                 await signInWithEmailAndPassword(auth, email, password);
             } else {
-                await createUserWithEmailAndPassword(auth, email, password);
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                // Create user document for new users
+                await setDoc(doc(db, 'users', userCredential.user.uid), {
+                    email: userCredential.user.email,
+                    isPremium: false,
+                    createdAt: serverTimestamp()
+                });
             }
         } catch (err) {
             console.error(err);
@@ -40,7 +48,18 @@ const Auth = () => {
         setLoading(true);
         setError('');
         try {
-            await signInWithPopup(auth, googleProvider);
+            const result = await signInWithPopup(auth, googleProvider);
+            // Check if user exists, if not create doc
+            const userRef = doc(db, 'users', result.user.uid);
+            const userSnap = await getDoc(userRef);
+
+            if (!userSnap.exists()) {
+                await setDoc(userRef, {
+                    email: result.user.email,
+                    isPremium: false,
+                    createdAt: serverTimestamp()
+                });
+            }
         } catch (err) {
             console.error(err);
             setError('ไม่สามารถเข้าสู่ระบบด้วย Google ได้');
@@ -60,8 +79,8 @@ const Auth = () => {
                     <div className="inline-flex p-4 rounded-3xl bg-gradient-to-br from-accent-primary to-accent-secondary shadow-xl shadow-accent-primary/30 mb-6">
                         <Lock className="text-white w-8 h-8" />
                     </div>
-                    <h1 className="text-4xl font-black text-gradient mb-2">HorPlot</h1>
-                    <p className="text-muted font-bold tracking-wide italic">| หอพล็อต : หอพักนักเขียน</p>
+                    <h1 className="text-4xl font-black text-gradient mb-2">HorPlot | หอพล็อต</h1>
+                    <p className="text-muted font-bold tracking-wide italic">หอพักนักเขียน</p>
                 </div>
 
                 <div className="glass-card p-8 md:p-10 bg-white/30 backdrop-blur-3xl saturate-150 border-white/40 shadow-2xl">
@@ -186,7 +205,7 @@ const Auth = () => {
                 </div>
 
                 <p className="mt-8 text-center text-xs font-medium text-muted/40 italic px-4">
-                    {isLogin ? '© 2026 HorPlot – Welcome back, Legend.' : '© 2026 HorPlot – Start your epic journey today.'}
+                    {isLogin ? '© 2026 HorPlot | หอพล็อต – หอพักนักเขียน.' : '© 2026 HorPlot | หอพล็อต – หอพักนักเขียน.'}
                 </p>
             </div>
         </div>

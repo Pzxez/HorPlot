@@ -137,12 +137,12 @@ const WritingRoom = ({ language, projectId, showToast }) => {
             </header>
 
             {/* Distraction-Free Editor */}
-            <div className="flex-1 glass-card p-0 overflow-hidden border-white/20 shadow-2xl relative bg-white/10 saturate-150 rounded-[2rem] md:rounded-[3rem]">
+            <div className="flex-1 glass-card p-0 overflow-hidden border-white/40 shadow-2xl relative bg-white/40 saturate-150 rounded-[2rem] md:rounded-[3rem]">
                 <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder={currentT.placeholder}
-                    className="w-full h-full bg-transparent p-8 md:p-14 lg:p-20 focus:outline-none resize-none text-lg md:text-xl lg:text-2xl leading-relaxed text-slate-800 dark:text-slate-100 placeholder:text-muted/30 selection:bg-accent-primary/20"
+                    className="w-full h-full bg-transparent p-8 md:p-14 lg:p-20 focus:outline-none resize-none text-lg md:text-xl lg:text-2xl leading-relaxed text-slate-800 placeholder:text-muted/30 selection:bg-accent-primary/20"
                     style={{
                         fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                     }}

@@ -5,26 +5,15 @@
     --bg-mesh-1: #ffcfdf;
     --bg-mesh-2: #c084fc;
     --bg-mesh-3: #818cf8;
-    --bg-mesh-4: #e0e7ff;
-    --glass-bg: rgba(255, 255, 255, 0.4);
-    --glass-border: rgba(255, 255, 255, 0.3);
-    --inner-glow: inset 0 0 20px rgba(255, 255, 255, 0.2);
+    --bg-mesh-4: #f8fafc;
+    /* Lighter base */
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    /* More opaque for light mode */
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --inner-glow: inset 0 0 20px rgba(255, 255, 255, 0.4);
     --text-main: #1e1b4b;
-    --text-muted: #4b5563;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg-mesh-1: #1e1b4b;
-      --bg-mesh-2: #312e81;
-      --bg-mesh-3: #4c1d95;
-      --bg-mesh-4: #020617;
-      --glass-bg: rgba(0, 0, 0, 0.3);
-      --glass-border: rgba(255, 255, 255, 0.1);
-      --inner-glow: inset 0 0 15px rgba(255, 255, 255, 0.05);
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-    }
+    --text-muted: #64748b;
+    /* Slightly lighter muted text */
   }
 }
 
@@ -92,16 +81,10 @@ body::before {
 }
 
 .glass-sidebar {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
   border-right: 1px solid var(--glass-border);
-}
-
-@media (prefers-color-scheme: dark) {
-  .glass-sidebar {
-    background: rgba(0, 0, 0, 0.2);
-  }
 }
 
 .text-gradient {

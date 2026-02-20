@@ -1,5 +1,5 @@
 import { db, auth } from "./config";
-import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, updateDoc, deleteDoc, where } from "firebase/firestore";
+import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, updateDoc, deleteDoc, where, getDoc } from "firebase/firestore";
 
 /**
  * Adds a new project (novel) to the 'projects' collection.
@@ -48,6 +48,25 @@ export const deleteProject = async (id) => {
     } catch (e) {
         console.error("Error deleting project: ", e);
         throw e;
+    }
+};
+
+/**
+ * Fetches a single project's details.
+ * @param {string} id - The document ID
+ */
+export const getProject = async (id) => {
+    if (!id) return null;
+    try {
+        const docRef = doc(db, "projects", id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            return { id: docSnap.id, ...docSnap.data() };
+        }
+        return null;
+    } catch (e) {
+        console.error("Error fetching project: ", e);
+        return null;
     }
 };
 

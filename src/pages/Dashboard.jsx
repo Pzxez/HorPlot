@@ -11,7 +11,6 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
     const [editingProject, setEditingProject] = useState(null);
     const [newTitle, setNewTitle] = useState('');
     const [isSaving, setIsSaving] = useState(false);
-    const [isPremium, setIsPremium] = useState(false);
 
     const t = {
         TH: {
@@ -58,25 +57,11 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
             setLoading(false);
         });
 
-        // Non-blocking premium check
-        const fetchPremiumStatus = async () => {
-            if (!auth.currentUser) return;
-            try {
-                const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
-                if (userDoc.exists()) {
-                    setIsPremium(userDoc.data().isPremium || false);
-                }
-            } catch (error) {
-                console.error("Error fetching premium status in Dashboard:", error);
-            }
-        };
-        fetchPremiumStatus();
-
         return () => {
             unsubscribe();
             clearTimeout(timeout);
         };
-    }, [auth.currentUser?.uid]);
+    }, []);
 
     const handleSave = async (e) => {
         if (e) e.preventDefault();
@@ -102,18 +87,31 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
         }
     };
 
-    const handleDeleteProject = async (id, title) => {
-        if (confirm(`Delete "${title}"? This cannot be undone.`)) {
-            try {
-                await deleteProject(id);
-                showToast(language === 'TH' ? 'ลบนิยายเรียบร้อยแล้ว' : 'Novel deleted');
-                if (selectedProjectId === id) {
-                    onSelectProject(null);
-                }
-            } catch (error) {
-                console.error(error);
-                showToast(language === 'TH' ? 'เกิดข้อผิดพลาดในการลบ' : 'Error deleting project', 'error');
-            }
+    const [deleteConfirm, setDeleteConfirm] = useState(null); // { id, title }
+
+    const handleDeleteProject = (id, title) => {
+        setDeleteConfirm({ id, title });
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteConfirm) return;
+        const { id, title } = deleteConfirm;
+
+        console.log(`[DELETION] Starting deletion for project: ${id} (${title})`);
+
+        const originalProjects = [...projects];
+        setProjects(prev => prev.filter(p => p.id !== id));
+        setDeleteConfirm(null);
+
+        try {
+            await deleteProject(id);
+            console.log(`[DELETION] Success for project: ${id}`);
+            showToast(language === 'TH' ? 'ลบนิยายเรียบร้อยแล้ว' : 'Novel deleted');
+            if (selectedProjectId === id) onSelectProject(null);
+        } catch (error) {
+            console.error("[DELETION] Failed:", error);
+            setProjects(originalProjects);
+            showToast(language === 'TH' ? 'เกิดข้อผิดพลาดในการลบ' : 'Error deleting project', 'error');
         }
     };
 
@@ -156,21 +154,23 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
                             {/* Action Buttons */}
                             <div className="absolute top-6 right-6 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
                                 <button
+                                    title="Edit"
                                     onClick={(e) => { e.stopPropagation(); startEditing(project); }}
                                     className="p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-accent-primary hover:text-white transition-all shadow-lg"
                                 >
-                                    <Edit2 className="w-4 h-4" />
+                                    <Edit2 className="w-4 h-4 pointer-events-none" />
                                 </button>
                                 <button
+                                    title="Delete"
                                     onClick={(e) => { e.stopPropagation(); handleDeleteProject(project.id, project.title); }}
                                     className="p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-red-500 hover:text-white transition-all shadow-lg"
                                 >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Trash2 className="w-4 h-4 pointer-events-none" />
                                 </button>
                             </div>
 
                             <div className="space-y-6 relative z-10">
-                                <div className="w-16 h-16 rounded-2xl bg-white/10 dark:bg-white/5 flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform duration-500">
+                                <div className="w-16 h-16 rounded-2xl bg-white/40 flex items-center justify-center border border-white/40 group-hover:scale-110 transition-transform duration-500 shadow-inner">
                                     <Book className="w-8 h-8 text-accent-primary" />
                                 </div>
                                 <h3 className="text-3xl font-black tracking-tight leading-tight">{project.title}</h3>
@@ -211,11 +211,11 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
             {/* New/Edit Project Modal */}
             {isAdding && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
-                    <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => { setIsAdding(false); setEditingProject(null); setNewTitle(''); }} />
-                    <div className="glass-card w-full max-w-xl p-12 relative z-10 border-white/30 shadow-2xl animate-in zoom-in-95 duration-300">
+                    <div className="absolute inset-0 bg-slate-900/10 backdrop-blur-md" onClick={() => { setIsAdding(false); setEditingProject(null); setNewTitle(''); }} />
+                    <div className="glass-card w-full max-w-xl p-12 relative z-10 border-white/40 shadow-2xl animate-in zoom-in-95 duration-300 bg-white/80">
                         <header className="flex items-center justify-between mb-10">
-                            <h2 className="text-3xl font-black">{editingProject ? currentT.editTitle : currentT.createTitle}</h2>
-                            <button onClick={() => { setIsAdding(false); setEditingProject(null); setNewTitle(''); }} className="p-2 hover:bg-white/10 rounded-xl transition-colors">
+                            <h2 className="text-3xl font-bold">{editingProject ? currentT.editTitle : currentT.createTitle}</h2>
+                            <button onClick={() => { setIsAdding(false); setEditingProject(null); setNewTitle(''); }} className="p-2 hover:bg-black/5 rounded-xl transition-colors">
                                 <X className="w-6 h-6 text-muted" />
                             </button>
                         </header>
@@ -230,7 +230,7 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
                                     value={newTitle}
                                     onChange={e => setNewTitle(e.target.value)}
                                     placeholder={currentT.placeholder}
-                                    className="w-full bg-white/5 border border-glass-stroke rounded-3xl py-6 px-8 focus:outline-none focus:ring-4 focus:ring-accent-primary/30 text-2xl font-bold transition-all"
+                                    className="w-full bg-white/40 border border-glass-stroke rounded-3xl py-6 px-8 focus:outline-none focus:ring-4 focus:ring-accent-primary/20 text-2xl font-bold transition-all"
                                 />
                             </div>
                             <div className="flex space-x-4 pt-4">
@@ -255,6 +255,42 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Custom Deletion Modal */}
+            {deleteConfirm && (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 animate-in fade-in zoom-in duration-300">
+                    <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl" onClick={() => setDeleteConfirm(null)} />
+                    <div className="glass-card w-full max-w-md p-10 relative z-10 border-white/20 shadow-2xl bg-white/95 text-center space-y-8">
+                        <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto">
+                            <Trash2 className="w-10 h-10 text-red-500" />
+                        </div>
+                        <div className="space-y-2">
+                            <h3 className="text-2xl font-black text-slate-900">
+                                {language === 'TH' ? 'ยืนยันการลบ?' : 'Are you sure?'}
+                            </h3>
+                            <p className="text-muted font-medium">
+                                {language === 'TH'
+                                    ? `คุณแน่ใจหรือไม่ว่าต้องการลบ "${deleteConfirm.title}"? ขั้นตอนนี้ไม่สามารถย้อนกลับได้`
+                                    : `Delete "${deleteConfirm.title}"? This action is permanent and threads will be lost forever.`}
+                            </p>
+                        </div>
+                        <div className="flex flex-col gap-3">
+                            <button
+                                onClick={confirmDelete}
+                                className="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl shadow-red-500/20 active:scale-95"
+                            >
+                                {language === 'TH' ? 'ยืนยันการลบ' : 'Delete Forever'}
+                            </button>
+                            <button
+                                onClick={() => setDeleteConfirm(null)}
+                                className="w-full py-4 rounded-2xl hover:bg-black/5 text-muted font-bold transition-all"
+                            >
+                                {language === 'TH' ? 'ยกเลิก' : 'Keep it'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

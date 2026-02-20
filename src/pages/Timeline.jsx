@@ -216,10 +216,10 @@ const Timeline = ({ language, projectId, showToast }) => {
                             {plotPoints.map((point, idx) => (
                                 <div key={point.id || idx} className="flex md:flex-col items-center w-full md:w-80 shrink-0 gap-6 md:gap-0">
                                     {/* Point Indicator */}
-                                    <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full border-[4px] md:border-[6px] border-[var(--bg-mesh-4)] flex items-center justify-center mb-0 md:mb-10 relative z-20 transition-all duration-500 transform md:group-hover:scale-110 shrink-0 ${point.status === 'completed' ? 'bg-accent-primary shadow-[0_0_20px_rgba(129,140,248,0.5)]' :
-                                        point.status === 'in-progress' ? 'bg-accent-secondary animate-pulse' : 'bg-white/10'
+                                    <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full border-[4px] md:border-[6px] border-[var(--bg-mesh-4)] flex items-center justify-center mb-0 md:mb-10 relative z-20 transition-all duration-500 transform md:group-hover:scale-110 shrink-0 ${point.status === 'completed' ? 'bg-accent-primary shadow-[0_0_20px_rgba(129,140,248,0.3)]' :
+                                        point.status === 'in-progress' ? 'bg-accent-secondary animate-pulse' : 'bg-slate-200'
                                         }`}>
-                                        {point.status === 'completed' ? <Target className="w-5 h-5 md:w-6 md:h-6 text-white" /> : <Flag className="w-5 h-5 md:w-6 md:h-6 text-muted" />}
+                                        {point.status === 'completed' ? <Target className="w-5 h-5 md:w-6 md:h-6 text-white" /> : <Flag className="w-5 h-5 md:w-6 md:h-6 text-muted/60" />}
 
                                         {/* Vertical Connector Top */}
                                         <div className={`absolute bottom-full left-1/2 -translate-x-1/2 w-0.5 h-12 bg-white/20 hidden md:block ${idx % 2 === 0 ? 'md:block' : 'md:hidden'

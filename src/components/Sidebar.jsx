@@ -59,9 +59,9 @@ const Sidebar = ({ activeTab, setActiveTab, language, setLanguage, selectedProje
                     <GitCommit className="text-white w-7 h-7 rotate-90" />
                 </div>
                 <div>
-                    <h2 className="text-3xl font-black tracking-tight text-gradient leading-none">HorPlot</h2>
+                    <h2 className="text-3xl font-black tracking-tight text-gradient leading-none">HorPlot | หอพล็อต</h2>
                     <p className="text-[11px] font-bold text-muted italic mt-1.5 tracking-wide">
-                        | หอพล็อต : หอพักนักเขียน
+                        หอพักนักเขียน
                     </p>
                 </div>
             </div>
