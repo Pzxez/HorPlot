@@ -8,7 +8,7 @@ const Premium = ({ showToast, isPremium, purchasedFeatures, setActiveTab }) => {
         showToast('ระบบชำระเงินจะเปิดให้บริการเร็วๆ นี้', 'info');
     };
 
-    const isOwned = (key) => purchasedFeatures?.includes(key);
+    const isOwned = (key) => isPremium || purchasedFeatures?.includes(key);
 
     const copyUID = () => {
         navigator.clipboard.writeText(auth.currentUser?.uid);

@@ -46,7 +46,7 @@ const Navbar = ({ activeTab, setActiveTab, language, setLanguage, selectedProjec
             label: currentT.premium,
             icon: Crown,
             premium: true,
-            hidden: purchasedFeatures && purchasedFeatures.length > 0
+            hidden: isPremium || (purchasedFeatures && purchasedFeatures.length > 0)
         }
     ];
 
@@ -202,11 +202,11 @@ const Navbar = ({ activeTab, setActiveTab, language, setLanguage, selectedProjec
                             </button>
                         ))}
 
-                        {purchasedFeatures && purchasedFeatures.length > 0 && (
+                        {(isPremium || (purchasedFeatures && purchasedFeatures.length > 0)) && (
                             <div className="pt-6 mt-6 border-t border-glass-stroke space-y-2">
                                 <p className="text-[10px] font-bold text-amber-500 uppercase tracking-[0.2em] ml-2 mb-4">Premium Tools</p>
 
-                                {purchasedFeatures.includes('relationship_map') && (
+                                {(isPremium || purchasedFeatures?.includes('relationship_map')) && (
                                     <button
                                         onClick={() => {
                                             setActiveTab('relationship-map');
@@ -219,7 +219,7 @@ const Navbar = ({ activeTab, setActiveTab, language, setLanguage, selectedProjec
                                     </button>
                                 )}
 
-                                {purchasedFeatures.includes('social_sim') && (
+                                {(isPremium || purchasedFeatures?.includes('social_sim')) && (
                                     <button
                                         onClick={() => {
                                             setActiveTab('social-au');

@@ -28,7 +28,7 @@ const PremiumDropdown = ({ setActiveTab, isPremium, purchasedFeatures, selectedP
         setIsOpen(false);
     };
 
-    if (!isPremium || !purchasedFeatures || purchasedFeatures.length === 0) return null;
+    if (!isPremium && (!purchasedFeatures || purchasedFeatures.length === 0)) return null;
 
     const allItems = [
         {
@@ -51,7 +51,7 @@ const PremiumDropdown = ({ setActiveTab, isPremium, purchasedFeatures, selectedP
         }
     ];
 
-    const visibleItems = allItems.filter(item => purchasedFeatures.includes(item.key));
+    const visibleItems = allItems.filter(item => isPremium || purchasedFeatures?.includes(item.key));
 
     return (
         <div className="relative" ref={dropdownRef}>
