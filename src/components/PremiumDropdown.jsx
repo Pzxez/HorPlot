@@ -5,7 +5,24 @@ const PremiumDropdown = ({ setActiveTab, isPremium, purchasedFeatures, selectedP
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
-    const lockMsg = language === 'TH' ? 'กรุณาเลือกนิยายที่ต้องการเขียนก่อน' : 'Please select a novel first';
+    const t = {
+        TH: {
+            lockMsg: 'กรุณาเลือกนิยายที่ต้องการเขียนก่อน',
+            premiumButtonDesktop: 'เครื่องมือพิเศษ',
+            premiumButtonMobile: 'Premium',
+            buyMore: '+ ซื้อฟีเจอร์พรีเมียมเพิ่ม',
+            locked: 'ล็อค'
+        },
+        EN: {
+            lockMsg: 'Please select a novel first',
+            premiumButtonDesktop: 'Premium Tools',
+            premiumButtonMobile: 'Premium',
+            buyMore: '+ Unlock More Features',
+            locked: 'Locked'
+        }
+    };
+
+    const currentT = t[language] || t.TH;
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -20,7 +37,7 @@ const PremiumDropdown = ({ setActiveTab, isPremium, purchasedFeatures, selectedP
     const handleItemClick = (id) => {
         if (!selectedProjectId) {
             setActiveTab('dashboard');
-            showToast(lockMsg, 'info');
+            showToast(currentT.lockMsg, 'info');
             setIsOpen(false);
             return;
         }
@@ -51,8 +68,6 @@ const PremiumDropdown = ({ setActiveTab, isPremium, purchasedFeatures, selectedP
         }
     ];
 
-    const visibleItems = allItems.filter(item => isPremium || purchasedFeatures?.includes(item.key));
-
     return (
         <div className="relative" ref={dropdownRef}>
             <button
@@ -63,29 +78,38 @@ const PremiumDropdown = ({ setActiveTab, isPremium, purchasedFeatures, selectedP
                     }`}
             >
                 <Sparkles className="w-4 h-4" />
-                <span className="hidden xl:inline">เครื่องมือพิเศษ</span>
-                <span className="xl:hidden">Premium</span>
+                <span className="hidden xl:inline">{currentT.premiumButtonDesktop}</span>
+                <span className="xl:hidden">{currentT.premiumButtonMobile}</span>
                 <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {isOpen && (
                 <div className="absolute top-full right-0 mt-3 w-72 glass-card p-3 border-white/20 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-300 z-[100]">
                     <div className="space-y-1">
-                        {visibleItems.map((item) => (
-                            <button
-                                key={item.id}
-                                onClick={() => handleItemClick(item.id)}
-                                className={`w-full flex items-center space-x-4 p-4 rounded-xl transition-all duration-300 text-left group border border-transparent hover:bg-accent-primary/5 hover:border-accent-primary/10 ${!selectedProjectId ? 'opacity-50' : ''}`}
-                            >
-                                <div className={`w-10 h-10 rounded-xl ${item.bg} flex items-center justify-center border border-white/5 transition-transform group-hover:scale-110`}>
-                                    <item.icon className={`w-5 h-5 ${item.color}`} />
-                                </div>
-                                <div className="flex-1">
-                                    <span className="font-bold text-[var(--text-main)] text-sm">{item.label}</span>
-                                    <p className="text-[10px] text-muted font-bold uppercase tracking-widest">{item.desc}</p>
-                                </div>
-                            </button>
-                        ))}
+                        {allItems.map((item) => {
+                            const isOwned = isPremium || purchasedFeatures?.includes(item.key);
+                            return (
+                                <button
+                                    key={item.id}
+                                    onClick={() => isOwned ? handleItemClick(item.id) : null}
+                                    disabled={!isOwned}
+                                    className={`w-full flex items-center space-x-4 p-4 rounded-xl transition-all duration-300 text-left group border border-transparent 
+                                        ${isOwned ? 'hover:bg-accent-primary/5 hover:border-accent-primary/10 cursor-pointer' : 'opacity-40 grayscale cursor-not-allowed'}
+                                        ${!selectedProjectId && isOwned ? 'opacity-50' : ''}`}
+                                >
+                                    <div className={`w-10 h-10 rounded-xl ${item.bg} flex items-center justify-center border border-white/5 transition-transform ${isOwned ? 'group-hover:scale-110' : ''}`}>
+                                        <item.icon className={`w-5 h-5 ${item.color}`} />
+                                    </div>
+                                    <div className="flex-1">
+                                        <span className={`font-bold text-sm ${isOwned ? 'text-[var(--text-main)]' : 'text-muted'}`}>{item.label}</span>
+                                        <p className="text-[10px] text-muted font-bold uppercase tracking-widest">{item.desc}</p>
+                                    </div>
+                                    {!isOwned && (
+                                        <Lock className="w-4 h-4 text-muted" />
+                                    )}
+                                </button>
+                            );
+                        })}
 
                         <div className="h-px bg-glass-stroke my-2 mx-2" />
 
@@ -97,7 +121,7 @@ const PremiumDropdown = ({ setActiveTab, isPremium, purchasedFeatures, selectedP
                             className="w-full flex items-center justify-center space-x-2 p-3 rounded-xl transition-all duration-300 text-amber-500 hover:bg-amber-500/5 font-bold text-xs"
                         >
                             <Sparkles className="w-3 h-3" />
-                            <span>+ ซื้อฟีเจอร์พรีเมียมเพิ่ม</span>
+                            <span>{currentT.buyMore}</span>
                         </button>
                     </div>
                 </div>

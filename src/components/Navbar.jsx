@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, GitCommit, LogOut, Settings, Globe, LayoutDashboard, Users, Feather, GitPullRequest, Library, Crown, Network, Share2 } from 'lucide-react';
+import { Menu, X, GitCommit, LogOut, Settings, Globe, LayoutDashboard, Users, Feather, GitPullRequest, Library, Crown, Network, Share2, Lock } from 'lucide-react';
 import { auth } from '../firebase/config';
 import { signOut } from 'firebase/auth';
 import PremiumDropdown from './PremiumDropdown';
@@ -17,8 +17,11 @@ const Navbar = ({ activeTab, setActiveTab, language, setLanguage, selectedProjec
             vocab: 'คลังคำศัพท์',
             premium: 'Premium',
             logout: 'ออกจากระบบ',
+            logout: 'ออกจากระบบ',
             lockMsg: 'กรุณาเลือกนิยายที่ต้องการเขียนก่อน',
-            activeProject: 'กำลังเขียนเรื่อง:'
+            activeProject: 'กำลังเขียนเรื่อง:',
+            premiumTools: 'เครื่องมือพิเศษ',
+            buyMore: '+ ซื้อฟีเจอร์พรีเมียมเพิ่ม'
         },
         EN: {
             dashboard: 'Dashboard',
@@ -29,7 +32,9 @@ const Navbar = ({ activeTab, setActiveTab, language, setLanguage, selectedProjec
             premium: 'Premium',
             logout: 'Logout',
             lockMsg: 'Please select a novel first',
-            activeProject: 'Active Project:'
+            activeProject: 'Active Project:',
+            premiumTools: 'Premium Tools',
+            buyMore: '+ Unlock More Features'
         }
     };
 
@@ -204,33 +209,55 @@ const Navbar = ({ activeTab, setActiveTab, language, setLanguage, selectedProjec
 
                         {(isPremium || (purchasedFeatures && purchasedFeatures.length > 0)) && (
                             <div className="pt-6 mt-6 border-t border-glass-stroke space-y-2">
-                                <p className="text-[10px] font-bold text-amber-500 uppercase tracking-[0.2em] ml-2 mb-4">Premium Tools</p>
+                                <p className="text-[10px] font-bold text-amber-500 uppercase tracking-[0.2em] ml-2 mb-4">{currentT.premiumTools}</p>
 
-                                {(isPremium || purchasedFeatures?.includes('relationship_map')) && (
-                                    <button
-                                        onClick={() => {
+                                <button
+                                    onClick={() => {
+                                        if (isPremium || purchasedFeatures?.includes('relationship_map')) {
                                             setActiveTab('relationship-map');
                                             setIsMenuOpen(false);
-                                        }}
-                                        className="w-full flex items-center space-x-4 p-5 rounded-2xl text-indigo-500 bg-indigo-500/5 hover:bg-indigo-500/10 transition-all border border-indigo-500/20"
-                                    >
-                                        <Network className="w-6 h-6" />
-                                        <span className="font-bold text-lg">Relationship Map</span>
-                                    </button>
-                                )}
+                                        }
+                                    }}
+                                    className={`w-full flex items-center space-x-4 p-5 rounded-2xl transition-all border 
+                                        ${(isPremium || purchasedFeatures?.includes('relationship_map'))
+                                            ? 'text-indigo-500 bg-indigo-500/5 hover:bg-indigo-500/10 border-indigo-500/20 cursor-pointer'
+                                            : 'text-muted bg-white/5 opacity-50 grayscale cursor-not-allowed border-transparent'
+                                        }`}
+                                >
+                                    <div className="flex items-center justify-between w-full">
+                                        <div className="flex items-center space-x-4">
+                                            <Network className="w-6 h-6" />
+                                            <span className="font-bold text-lg">Relationship Map</span>
+                                        </div>
+                                        {!(isPremium || purchasedFeatures?.includes('relationship_map')) && (
+                                            <Lock className="w-4 h-4" />
+                                        )}
+                                    </div>
+                                </button>
 
-                                {(isPremium || purchasedFeatures?.includes('social_sim')) && (
-                                    <button
-                                        onClick={() => {
+                                <button
+                                    onClick={() => {
+                                        if (isPremium || purchasedFeatures?.includes('social_sim')) {
                                             setActiveTab('social-au');
                                             setIsMenuOpen(false);
-                                        }}
-                                        className="w-full flex items-center space-x-4 p-5 rounded-2xl text-amber-500 bg-amber-500/5 hover:bg-amber-500/10 transition-all border border-amber-500/20"
-                                    >
-                                        <Share2 className="w-6 h-6" />
-                                        <span className="font-bold text-lg">Social Media AU</span>
-                                    </button>
-                                )}
+                                        }
+                                    }}
+                                    className={`w-full flex items-center space-x-4 p-5 rounded-2xl transition-all border 
+                                        ${(isPremium || purchasedFeatures?.includes('social_sim'))
+                                            ? 'text-amber-500 bg-amber-500/5 hover:bg-amber-500/10 border-amber-500/20 cursor-pointer'
+                                            : 'text-muted bg-white/5 opacity-50 grayscale cursor-not-allowed border-transparent'
+                                        }`}
+                                >
+                                    <div className="flex items-center justify-between w-full">
+                                        <div className="flex items-center space-x-4">
+                                            <Share2 className="w-6 h-6" />
+                                            <span className="font-bold text-lg">Social Media AU</span>
+                                        </div>
+                                        {!(isPremium || purchasedFeatures?.includes('social_sim')) && (
+                                            <Lock className="w-4 h-4" />
+                                        )}
+                                    </div>
+                                </button>
 
                                 <button
                                     onClick={() => {
@@ -240,7 +267,7 @@ const Navbar = ({ activeTab, setActiveTab, language, setLanguage, selectedProjec
                                     className="w-full flex items-center justify-center space-x-2 p-4 rounded-2xl text-amber-500 hover:bg-amber-500/5 font-bold mt-4 border border-dashed border-amber-500/30"
                                 >
                                     <Crown className="w-4 h-4" />
-                                    <span>+ ซื้อฟีเจอร์พรีเมียมเพิ่ม</span>
+                                    <span>{currentT.buyMore}</span>
                                 </button>
                             </div>
                         )}
