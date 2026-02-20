@@ -27,14 +27,14 @@ const Select = ({ value, onChange, options, label, className = "" }) => {
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full bg-slate-900/5 dark:bg-white/10 border border-glass-stroke rounded-2xl py-4 px-6 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-accent-secondary/50 transition-all hover:bg-slate-900/10 dark:hover:bg-white/20 active:scale-[0.98]"
+                className="w-full bg-white/5 border border-glass-stroke rounded-2xl py-4 px-6 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-accent-primary/50 transition-all hover:bg-white/10 active:scale-[0.98]"
             >
-                <span className="font-bold text-slate-900 dark:text-slate-100">{selectedOption.label}</span>
+                <span className="font-bold text-[var(--text-main)]">{selectedOption.label}</span>
                 <ChevronDown className={`w-5 h-5 text-muted transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {isOpen && (
-                <div className="absolute z-[100] w-full mt-2 bg-white/80 dark:bg-black/80 backdrop-blur-2xl border border-white/20 rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                <div className="absolute z-[100] w-full mt-2 bg-white/95 backdrop-blur-2xl border border-glass-stroke rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                     <div className="py-2">
                         {options.map((option) => (
                             <button
@@ -44,14 +44,14 @@ const Select = ({ value, onChange, options, label, className = "" }) => {
                                     onChange(option.value);
                                     setIsOpen(false);
                                 }}
-                                className={`w-full px-6 py-4 flex items-center justify-between text-left transition-all hover:bg-purple-600/50 group ${value === option.value ? 'bg-purple-600/30' : ''
+                                className={`w-full px-6 py-4 flex items-center justify-between text-left transition-all hover:bg-accent-primary/5 group ${value === option.value ? 'bg-accent-primary/10' : ''
                                     }`}
                             >
-                                <span className={`font-medium ${value === option.value ? 'text-slate-900 dark:text-slate-100 font-bold' : 'text-slate-700 dark:text-slate-300'
-                                    } group-hover:text-white`}>
+                                <span className={`font-medium ${value === option.value ? 'text-accent-primary font-bold' : 'text-muted'
+                                    } group-hover:text-accent-primary`}>
                                     {option.label}
                                 </span>
-                                {value === option.value && <Check className="w-4 h-4 text-purple-400" />}
+                                {value === option.value && <Check className="w-4 h-4 text-accent-primary" />}
                             </button>
                         ))}
                     </div>

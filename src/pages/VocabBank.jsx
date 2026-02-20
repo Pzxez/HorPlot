@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, Library, Tag, Trash2, ChevronRight, Globe, Loader2, X, Check } from 'lucide-react';
-import { addVocab, subscribeToVocab, deleteVocab } from '../firebase/vocabService';
+import { addVocab, subscribeToVocab, deleteVocab, updateVocab } from '../firebase/vocabService';
 import Select from '../components/Select';
 import AccessDenied from '../components/AccessDenied';
 
@@ -10,7 +10,9 @@ const VocabBank = ({ language, setLanguage, projectId, showToast }) => {
     const [vocabList, setVocabList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
+    const [editingId, setEditingId] = useState(null);
     const [newWord, setNewWord] = useState({ word: '', meaning: '', category: 'คำนาม', customCategory: '' });
+    const [editWord, setEditWord] = useState({ word: '', meaning: '', category: 'คำนาม', customCategory: '' });
 
     const t = {
         TH: {
@@ -27,6 +29,7 @@ const VocabBank = ({ language, setLanguage, projectId, showToast }) => {
             noResult: 'ไม่พบคำศัพท์',
             loading: 'กำลังโหลด...',
             successAdd: 'เพิ่มคำศัพท์แล้ว',
+            successUpdate: 'แก้ไขคำศัพท์แล้ว',
             successDelete: 'ลบคำศัพท์แล้ว',
             error: 'เกิดข้อผิดพลาด',
             categories: ['ทั้งหมด', 'คำนาม', 'คำกริยา', 'คำคุณศัพท์', 'อารมณ์', 'อื่น ๆ'],
@@ -46,6 +49,7 @@ const VocabBank = ({ language, setLanguage, projectId, showToast }) => {
             noResult: 'No words found',
             loading: 'Loading...',
             successAdd: 'Word added',
+            successUpdate: 'Word updated',
             successDelete: 'Word deleted',
             error: 'Error occurred',
             categories: ['All', 'Noun', 'Verb', 'Adjective', 'Emotion', 'Other'],
@@ -95,6 +99,34 @@ const VocabBank = ({ language, setLanguage, projectId, showToast }) => {
                 showToast(currentT.error, 'error');
             }
         }
+    };
+
+    const handleUpdateWord = async (e) => {
+        e.preventDefault();
+        const finalCategory = editWord.category === currentT.other ? editWord.customCategory : editWord.category;
+        try {
+            await updateVocab(editingId, {
+                word: editWord.word,
+                meaning: editWord.meaning,
+                category: finalCategory || currentT.other
+            });
+            showToast(currentT.successUpdate);
+            setEditingId(null);
+        } catch (error) {
+            console.error(error);
+            showToast(currentT.error, 'error');
+        }
+    };
+
+    const startEditing = (item) => {
+        setEditingId(item.id);
+        const isCustom = !currentT.categories.includes(item.category);
+        setEditWord({
+            word: item.word,
+            meaning: item.meaning,
+            category: isCustom ? currentT.other : item.category,
+            customCategory: isCustom ? item.category : ''
+        });
     };
 
     const filteredVocab = vocabList.filter(item => {
@@ -231,32 +263,86 @@ const VocabBank = ({ language, setLanguage, projectId, showToast }) => {
                     <>
                         {filteredVocab.map((item) => (
                             <div key={item.id} className="glass-card p-6 md:p-8 flex flex-col justify-between group h-full transition-all duration-500">
-                                <div className="space-y-5">
-                                    <div className="flex items-center justify-between">
-                                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-accent-primary/10 flex items-center justify-center border border-accent-primary/20">
-                                            <Library className="w-5 h-5 md:w-6 md:h-6 text-accent-primary" />
+                                {editingId === item.id ? (
+                                    <form onSubmit={handleUpdateWord} className="space-y-4">
+                                        <input
+                                            required
+                                            value={editWord.word}
+                                            onChange={e => setEditWord({ ...editWord, word: e.target.value })}
+                                            className="w-full bg-white/5 border border-glass-stroke rounded-xl py-2 px-3 focus:outline-none focus:ring-1 focus:ring-accent-primary font-bold"
+                                        />
+                                        <textarea
+                                            required
+                                            value={editWord.meaning}
+                                            onChange={e => setEditWord({ ...editWord, meaning: e.target.value })}
+                                            className="w-full bg-white/5 border border-glass-stroke rounded-xl py-2 px-3 focus:outline-none focus:ring-1 focus:ring-accent-primary text-sm min-h-[60px]"
+                                        />
+                                        <div className="flex gap-2">
+                                            <Select
+                                                value={editWord.category}
+                                                onChange={val => setEditWord({ ...editWord, category: val })}
+                                                options={categoryOptions}
+                                                className="flex-1"
+                                            />
                                         </div>
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-accent-secondary bg-accent-secondary/10 px-3 py-1.5 rounded-full border border-accent-secondary/10">
-                                            {item.category}
-                                        </span>
-                                    </div>
-                                    <div className="space-y-3">
-                                        <h3 className="text-xl md:text-2xl font-black truncate">{item.word}</h3>
-                                        <p className="text-muted font-light leading-relaxed text-sm md:text-base line-clamp-4">{item.meaning}</p>
-                                    </div>
-                                </div>
-                                <div className="mt-6 pt-6 border-t border-glass-stroke flex items-center justify-between md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 transform md:translate-y-2 md:group-hover:translate-y-0">
-                                    <button
-                                        onClick={() => handleDelete(item.id)}
-                                        className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-red-500/10 text-muted hover:text-red-500 transition-colors border border-transparent hover:border-red-500/20"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
-                                    <button className="flex items-center space-x-2 text-accent-primary font-black text-xs uppercase tracking-widest hover:text-accent-secondary transition-colors">
-                                        <span>Edit</span>
-                                        <ChevronRight className="w-4 h-4" />
-                                    </button>
-                                </div>
+                                        {editWord.category === currentT.other && (
+                                            <input
+                                                required
+                                                value={editWord.customCategory}
+                                                onChange={e => setEditWord({ ...editWord, customCategory: e.target.value })}
+                                                placeholder={currentT.customCatPlaceholder}
+                                                className="w-full bg-white/5 border border-glass-stroke rounded-xl py-2 px-3 focus:outline-none focus:ring-1 focus:ring-accent-primary text-sm"
+                                            />
+                                        )}
+                                        <div className="flex justify-end gap-2 pt-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => setEditingId(null)}
+                                                className="p-2 rounded-xl hover:bg-black/5 text-muted transition-colors"
+                                            >
+                                                <X className="w-5 h-5" />
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                className="p-2 rounded-xl bg-accent-primary hover:bg-accent-primary/80 text-white transition-colors"
+                                            >
+                                                <Check className="w-5 h-5" />
+                                            </button>
+                                        </div>
+                                    </form>
+                                ) : (
+                                    <>
+                                        <div className="space-y-5">
+                                            <div className="flex items-center justify-between">
+                                                <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-accent-primary/10 flex items-center justify-center border border-accent-primary/20">
+                                                    <Library className="w-5 h-5 md:w-6 md:h-6 text-accent-primary" />
+                                                </div>
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-accent-secondary bg-accent-secondary/10 px-3 py-1.5 rounded-full border border-accent-secondary/10">
+                                                    {item.category}
+                                                </span>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <h3 className="text-xl md:text-2xl font-black truncate">{item.word}</h3>
+                                                <p className="text-muted font-light leading-relaxed text-sm md:text-base line-clamp-4">{item.meaning}</p>
+                                            </div>
+                                        </div>
+                                        <div className="mt-6 pt-6 border-t border-glass-stroke flex items-center justify-between md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 transform md:translate-y-2 md:group-hover:translate-y-0">
+                                            <button
+                                                onClick={() => handleDelete(item.id)}
+                                                className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-red-500/10 text-muted hover:text-red-500 transition-colors border border-transparent hover:border-red-500/20"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => startEditing(item)}
+                                                className="flex items-center space-x-2 text-accent-primary font-black text-xs uppercase tracking-widest hover:text-accent-secondary transition-colors"
+                                            >
+                                                <span>Edit</span>
+                                                <ChevronRight className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         ))}
                         {filteredVocab.length === 0 && (

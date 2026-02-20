@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { UserPlus, Search, MoreHorizontal, Link2, Loader2, X, Check } from 'lucide-react';
-import { addCharacter, subscribeToCharacters } from '../firebase/characterService';
+import { UserPlus, Search, Edit2, Trash2, Link2, Loader2, X, Check } from 'lucide-react';
+import { addCharacter, subscribeToCharacters, updateCharacter, deleteCharacter } from '../firebase/characterService';
 import AccessDenied from '../components/AccessDenied';
 
 const Characters = ({ language, projectId, showToast }) => {
     const [characters, setCharacters] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
+    const [editingId, setEditingId] = useState(null);
     const [newChar, setNewChar] = useState({ name: '', role: 'Protagonist', description: '', image: '' });
+    const [editChar, setEditChar] = useState({ name: '', role: '', description: '', image: '' });
 
     const t = {
         TH: {
@@ -24,7 +26,9 @@ const Characters = ({ language, projectId, showToast }) => {
             descPlaceholder: 'รายละเอียดตัวละคร...',
             loading: 'กำลังค้นหาพล็อต...',
             successAdd: 'เพิ่มตัวละครใหม่แล้ว',
-            errorAdd: 'เกิดข้อผิดพลาดในการเพิ่ม'
+            successUpdate: 'อัปเดตตัวละครแล้ว',
+            successDelete: 'ลบตัวละครแล้ว',
+            errorAdd: 'เกิดข้อผิดพลาด'
         },
         EN: {
             title: 'Cast & Crew',
@@ -40,7 +44,9 @@ const Characters = ({ language, projectId, showToast }) => {
             descPlaceholder: 'Description...',
             loading: 'Searching...',
             successAdd: 'Character added',
-            errorAdd: 'Error adding character'
+            successUpdate: 'Character updated',
+            successDelete: 'Character removed',
+            errorAdd: 'Error occurred'
         }
     };
 
@@ -70,6 +76,41 @@ const Characters = ({ language, projectId, showToast }) => {
             console.error(error);
             showToast(currentT.errorAdd, 'error');
         }
+    };
+
+    const handleDelete = async (id) => {
+        if (confirm('Confirm delete?')) {
+            try {
+                await deleteCharacter(id);
+                showToast(currentT.successDelete);
+            } catch (error) {
+                console.error(error);
+                showToast(currentT.errorAdd, 'error');
+            }
+        }
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        try {
+            const initials = editChar.name.split(' ').map(n => n[0]).join('').toUpperCase() || '?';
+            await updateCharacter(editingId, { ...editChar, image: initials });
+            showToast(currentT.successUpdate);
+            setEditingId(null);
+        } catch (error) {
+            console.error(error);
+            showToast(currentT.errorAdd, 'error');
+        }
+    };
+
+    const startEditing = (char) => {
+        setEditingId(char.id);
+        setEditChar({
+            name: char.name,
+            role: char.role,
+            description: char.description,
+            image: char.image
+        });
     };
 
     return (
@@ -167,33 +208,82 @@ const Characters = ({ language, projectId, showToast }) => {
                             <div className="h-48 md:h-56 lg:h-64 bg-white/5 flex items-center justify-center relative overflow-hidden shrink-0">
                                 <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                                 <span className="text-7xl md:text-8xl font-black text-white/5 transition-all duration-700 transform group-hover:scale-110 group-hover:text-white/10">{char.image}</span>
-                                <div className="absolute top-4 right-4 md:top-6 md:right-6">
-                                    <button className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-white/40 backdrop-blur-md hover:bg-white/60 text-[var(--text-main)] transition-all flex items-center justify-center border border-white/40 shadow-sm">
-                                        <MoreHorizontal className="w-5 h-5" />
+                                <div className="absolute top-4 right-4 md:top-6 md:right-6 opacity-0 group-hover:opacity-100 flex space-x-2 transition-opacity">
+                                    <button
+                                        onClick={() => startEditing(char)}
+                                        className="w-10 h-10 rounded-xl bg-white/80 backdrop-blur-md hover:bg-white text-accent-primary transition-all flex items-center justify-center shadow-lg hover:shadow-xl"
+                                    >
+                                        <Edit2 className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(char.id)}
+                                        className="w-10 h-10 rounded-xl bg-white/80 backdrop-blur-md hover:bg-red-500 hover:text-white text-red-500 transition-all flex items-center justify-center shadow-lg hover:shadow-xl"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>
                             <div className="p-6 md:p-8 space-y-5 flex-1 flex flex-col justify-between">
-                                <div className="space-y-4">
-                                    <div>
-                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-accent-primary mb-2 block">{char.role}</span>
-                                        <h3 className="text-xl md:text-2xl font-black truncate">{char.name}</h3>
-                                    </div>
-                                    <p className="text-muted font-light leading-relaxed text-sm md:text-base line-clamp-4">
-                                        {char.description}
-                                    </p>
-                                </div>
-                                <div className="pt-6 border-t border-glass-stroke flex items-center justify-between">
-                                    <button className="text-accent-primary text-xs md:text-sm font-bold hover:text-accent-secondary transition-colors flex items-center space-x-2">
-                                        <Link2 className="w-4 h-4" />
-                                        <span>{currentT.map}</span>
-                                    </button>
-                                    <div className="flex -space-x-2 md:-space-x-3">
-                                        {[1, 2].map(i => (
-                                            <div key={i} className="w-7 h-7 md:w-8 md:h-8 rounded-full border-2 border-[var(--bg-mesh-4)] bg-white/20 shadow-sm" />
-                                        ))}
-                                    </div>
-                                </div>
+                                {editingId === char.id ? (
+                                    <form onSubmit={handleUpdate} className="space-y-4 flex-1">
+                                        <input
+                                            required
+                                            value={editChar.name}
+                                            onChange={e => setEditChar({ ...editChar, name: e.target.value })}
+                                            className="w-full bg-white/5 border border-glass-stroke rounded-xl py-2 px-3 focus:outline-none focus:ring-1 focus:ring-accent-primary font-bold text-xl"
+                                        />
+                                        <input
+                                            required
+                                            value={editChar.role}
+                                            onChange={e => setEditChar({ ...editChar, role: e.target.value })}
+                                            className="w-full bg-white/5 border border-glass-stroke rounded-xl py-2 px-3 focus:outline-none focus:ring-1 focus:ring-accent-primary text-sm font-black uppercase text-accent-primary tracking-widest"
+                                        />
+                                        <textarea
+                                            required
+                                            value={editChar.description}
+                                            onChange={e => setEditChar({ ...editChar, description: e.target.value })}
+                                            className="w-full bg-white/5 border border-glass-stroke rounded-xl py-2 px-3 focus:outline-none focus:ring-1 focus:ring-accent-primary text-sm min-h-[80px]"
+                                        />
+                                        <div className="flex justify-end gap-2 pt-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => setEditingId(null)}
+                                                className="p-2 rounded-xl hover:bg-black/5 text-muted transition-colors"
+                                            >
+                                                <X className="w-5 h-5" />
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                className="p-2 rounded-xl bg-accent-primary hover:bg-accent-primary/80 text-white transition-colors"
+                                            >
+                                                <Check className="w-5 h-5" />
+                                            </button>
+                                        </div>
+                                    </form>
+                                ) : (
+                                    <>
+                                        <div className="space-y-4">
+                                            <div>
+                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-accent-primary mb-2 block">{char.role}</span>
+                                                <h3 className="text-xl md:text-2xl font-black truncate">{char.name}</h3>
+                                            </div>
+                                            <p className="text-muted font-light leading-relaxed text-sm md:text-base line-clamp-4">
+                                                {char.description}
+                                            </p>
+                                        </div>
+                                        <div className="pt-6 border-t border-glass-stroke flex items-center justify-between mt-auto">
+                                            <button className="text-accent-primary text-xs md:text-sm font-bold hover:text-accent-secondary transition-colors flex items-center space-x-2">
+                                                <Link2 className="w-4 h-4" />
+                                                <span>{currentT.map}</span>
+                                            </button>
+                                            <div className="flex -space-x-2 md:-space-x-3">
+                                                {[1, 2].map(i => (
+                                                    <div key={i} className="w-7 h-7 md:w-8 md:h-8 rounded-full border-2 border-[var(--bg-mesh-4)] bg-white/20 shadow-sm" />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     ))

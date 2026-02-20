@@ -55,3 +55,16 @@ export const deleteVocab = async (id) => {
         throw e;
     }
 };
+
+/**
+ * Updates a vocab entry.
+ */
+export const updateVocab = async (id, updatedData) => {
+    try {
+        const docRef = doc(db, "vocabs", id);
+        await updateDoc(docRef, updatedData);
+    } catch (e) {
+        console.error("Error updating word: ", e);
+        throw e;
+    }
+};

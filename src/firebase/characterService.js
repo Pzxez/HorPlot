@@ -46,3 +46,29 @@ export const subscribeToCharacters = (projectId, callback) => {
         }
     });
 };
+
+/**
+ * Updates a character entry.
+ */
+export const updateCharacter = async (id, updatedData) => {
+    try {
+        const docRef = doc(db, "characters", id);
+        await updateDoc(docRef, updatedData);
+    } catch (e) {
+        console.error("Error updating character: ", e);
+        throw e;
+    }
+};
+
+/**
+ * Deletes a character entry.
+ */
+export const deleteCharacter = async (id) => {
+    try {
+        const docRef = doc(db, "characters", id);
+        await deleteDoc(docRef);
+    } catch (e) {
+        console.error("Error deleting character: ", e);
+        throw e;
+    }
+};

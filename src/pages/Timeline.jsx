@@ -9,8 +9,8 @@ const Timeline = ({ language, projectId, showToast }) => {
     const [loading, setLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
     const [editingId, setEditingId] = useState(null);
-    const [editForm, setEditForm] = useState({ title: '', description: '', type: 'Plot Point', status: 'planned' });
-    const [newBeat, setNewBeat] = useState({ title: '', description: '', type: 'Plot Point', status: 'planned' });
+    const [editForm, setEditForm] = useState({ title: '', description: '', type: 'Plot Point', status: 'planned', annotations: '' });
+    const [newBeat, setNewBeat] = useState({ title: '', description: '', type: 'Plot Point', status: 'planned', annotations: '' });
 
     const t = {
         TH: {
@@ -23,6 +23,7 @@ const Timeline = ({ language, projectId, showToast }) => {
             cancel: 'ยกเลิก',
             titlePlaceholder: 'ชื่อเหตุการณ์...',
             descPlaceholder: 'เกิดอะไรขึ้นในตอนนี้...',
+            annotationsPlaceholder: 'บันทึกหรือหมายเหตุเพิ่มเติม (ถ้ามี)...',
             typeLabel: 'ความสำคัญ',
             confirmDelete: 'ยืนยันการลบจังหวะนี้?',
             successAdd: 'เพิ่มจังหวะใหม่แล้ว',
@@ -51,6 +52,7 @@ const Timeline = ({ language, projectId, showToast }) => {
             cancel: 'Cancel',
             titlePlaceholder: 'Event title...',
             descPlaceholder: 'What happens here...',
+            annotationsPlaceholder: 'Additional notes or findings...',
             typeLabel: 'Significance',
             confirmDelete: 'Are you sure you want to delete this beat?',
             successAdd: 'Plot beat added',
@@ -128,7 +130,8 @@ const Timeline = ({ language, projectId, showToast }) => {
             title: point.title,
             description: point.description,
             type: point.type,
-            status: point.status || 'planned'
+            status: point.status || 'planned',
+            annotations: point.annotations || ''
         });
     };
 
@@ -170,6 +173,12 @@ const Timeline = ({ language, projectId, showToast }) => {
                                 onChange={e => setNewBeat({ ...newBeat, description: e.target.value })}
                                 placeholder={currentT.descPlaceholder}
                                 className="w-full bg-white/5 border border-glass-stroke rounded-2xl py-4 px-6 focus:outline-none focus:ring-2 focus:ring-accent-secondary/50 min-h-[100px] md:min-h-[120px] font-light text-sm md:text-base"
+                            />
+                            <textarea
+                                value={newBeat.annotations}
+                                onChange={e => setNewBeat({ ...newBeat, annotations: e.target.value })}
+                                placeholder={currentT.annotationsPlaceholder}
+                                className="w-full bg-white/5 border border-glass-stroke rounded-2xl py-3 px-6 focus:outline-none focus:ring-2 focus:ring-accent-secondary/50 min-h-[60px] font-light text-sm text-muted italic"
                             />
                         </div>
                         <div className="space-y-6">
@@ -214,7 +223,7 @@ const Timeline = ({ language, projectId, showToast }) => {
                     ) : (
                         <>
                             {plotPoints.map((point, idx) => (
-                                <div key={point.id || idx} className="flex md:flex-col items-center w-full md:w-80 shrink-0 gap-6 md:gap-0">
+                                <div key={point.id || idx} className={`flex md:flex-col items-center w-full md:w-80 shrink-0 gap-6 md:gap-0 relative ${editingId === point.id ? 'z-[60]' : 'z-10'}`}>
                                     {/* Point Indicator */}
                                     <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full border-[4px] md:border-[6px] border-[var(--bg-mesh-4)] flex items-center justify-center mb-0 md:mb-10 relative z-20 transition-all duration-500 transform md:group-hover:scale-110 shrink-0 ${point.status === 'completed' ? 'bg-accent-primary shadow-[0_0_20px_rgba(129,140,248,0.3)]' :
                                         point.status === 'in-progress' ? 'bg-accent-secondary animate-pulse' : 'bg-slate-200'
@@ -245,6 +254,12 @@ const Timeline = ({ language, projectId, showToast }) => {
                                                     value={editForm.description}
                                                     onChange={e => setEditForm({ ...editForm, description: e.target.value })}
                                                     className="w-full bg-white/5 border border-glass-stroke rounded-lg py-2 px-3 focus:outline-none focus:ring-1 focus:ring-accent-primary text-xs font-light min-h-[60px]"
+                                                />
+                                                <textarea
+                                                    value={editForm.annotations}
+                                                    onChange={e => setEditForm({ ...editForm, annotations: e.target.value })}
+                                                    placeholder={currentT.annotationsPlaceholder}
+                                                    className="w-full bg-white/5 border border-glass-stroke rounded-lg py-2 px-3 focus:outline-none focus:ring-1 focus:ring-accent-primary text-xs font-light italic text-muted min-h-[40px]"
                                                 />
                                                 <div className="flex items-center justify-between pt-2">
                                                     <Select
@@ -294,12 +309,14 @@ const Timeline = ({ language, projectId, showToast }) => {
                                                 <p className="text-xs md:text-sm text-muted font-light leading-relaxed italic line-clamp-3">
                                                     "{point.description}"
                                                 </p>
-                                                <div className="pt-4 flex items-center justify-between text-muted">
-                                                    <div className="flex items-center space-x-2">
-                                                        <MessageSquare className="w-4 h-4 opacity-50" />
-                                                        <span className="text-[10px] font-bold lowercase">7 {currentT.annotations}</span>
+                                                <div className="pt-4 flex items-center justify-between text-muted border-t border-glass-stroke/50 mt-4">
+                                                    <div className="flex items-center space-x-2 flex-1 mr-4">
+                                                        <MessageSquare className="w-4 h-4 opacity-50 shrink-0" />
+                                                        <span className="text-[10px] sm:text-xs font-light leading-snug line-clamp-2 truncate">
+                                                            {point.annotations || '-'}
+                                                        </span>
                                                     </div>
-                                                    <div className={`w-2 h-2 rounded-full border ${point.status === 'completed' ? 'bg-emerald-500 border-emerald-500/50' :
+                                                    <div className={`w-2 h-2 rounded-full border shrink-0 ${point.status === 'completed' ? 'bg-emerald-500 border-emerald-500/50' :
                                                         point.status === 'in-progress' ? 'bg-orange-500 border-orange-500/50' :
                                                             'bg-slate-400 border-slate-400/50'
                                                         }`} />
