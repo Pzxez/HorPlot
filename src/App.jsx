@@ -110,7 +110,7 @@ const App = () => {
   }
 
   // Legal Gate: Block everything if user exists but hasn't accepted terms
-  if (!hasAcceptedTerms) {
+  if (user && !hasAcceptedTerms) {
     return <TermsModal user={user} language={language} showToast={showToast} />;
   }
 
