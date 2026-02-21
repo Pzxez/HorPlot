@@ -179,16 +179,16 @@ The Subscriber retains full and exclusive ownership of all literary constructs, 
                     </div>
                 </div>
 
-                <footer className="p-8 border-t border-glass-stroke bg-white/40">
+                <footer className="p-6 md:p-8 border-t border-glass-stroke bg-white/40">
                     <button
                         onClick={handleConfirm}
                         disabled={!isSigned || !hasAcceptedCheckbox || !hasScrolledToBottom || isSaving}
                         className="w-full h-16 md:h-20 bg-accent-primary hover:bg-accent-primary/80 disabled:bg-slate-200 disabled:opacity-50 text-white rounded-[2rem] font-black text-xl md:text-2xl transition-all shadow-xl shadow-accent-primary/20 flex items-center justify-center gap-4 active:scale-[0.98]"
                     >
                         {isSaving ? (
-                            <Loader2 className="w-8 h-8 animate-spin" />
+                            <Loader2 className="w-6 h-6 animate-spin" />
                         ) : (
-                            <Check className="w-8 h-8" />
+                            <Check className="w-6 h-6 md:w-8 md:h-8" />
                         )}
                         <span>{current.confirm}</span>
                     </button>

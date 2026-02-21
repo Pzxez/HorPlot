@@ -155,7 +155,7 @@ const App = () => {
         purchasedFeatures={purchasedFeatures}
         showToast={showToast}
       />
-      <main className="flex-1 p-6 md:p-12 w-full flex flex-col">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full flex flex-col">
         <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col">
           {renderContent()}
         </div>

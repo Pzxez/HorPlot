@@ -13,7 +13,7 @@ const WritingRoom = ({ language, projectId, showToast }) => {
 
     const t = {
         TH: {
-            placeholder: 'เริ่มเขียนตำนานของคุณที่นี่...',
+            placeholder: 'เริ่มเขียนเรื่องของคุณที่นี่...',
             words: 'คำ',
             saving: 'กำลังบันทึก...',
             saved: 'บันทึกแล้วเมื่อ',
@@ -23,7 +23,7 @@ const WritingRoom = ({ language, projectId, showToast }) => {
             loadingMsg: 'กำลังเปิดห้องทำงาน...'
         },
         EN: {
-            placeholder: 'Begin your legend here...',
+            placeholder: 'Begin your Novel here...',
             words: 'words',
             saving: 'Saving...',
             saved: 'Last saved at',
@@ -142,7 +142,7 @@ const WritingRoom = ({ language, projectId, showToast }) => {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder={currentT.placeholder}
-                    className="w-full h-full bg-transparent p-8 md:p-14 lg:p-20 focus:outline-none resize-none text-lg md:text-xl lg:text-2xl leading-relaxed text-slate-800 placeholder:text-muted/30 selection:bg-accent-primary/20"
+                    className="w-full h-full bg-transparent p-6 sm:p-10 md:p-14 lg:p-20 focus:outline-none resize-none text-lg md:text-xl lg:text-2xl leading-relaxed text-slate-800 placeholder:text-muted/30 selection:bg-accent-primary/20"
                     style={{
                         fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                     }}

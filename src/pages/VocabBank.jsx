@@ -17,7 +17,7 @@ const VocabBank = ({ language, setLanguage, projectId, showToast }) => {
     const t = {
         TH: {
             title: 'คลังคำศัพท์',
-            desc: 'ขัดเกลาคำศัพท์ของคุณและจัดเก็บคำเฉพาะของโลกนิยาย',
+            desc: 'รวบรวมศัพท์ของคุณและจัดเก็บคำเฉพาะของโลกนิยาย',
             addBtn: 'เพิ่มคำใหม่',
             search: 'ค้นหาคำศัพท์...',
             save: 'บันทึก',
@@ -145,8 +145,8 @@ const VocabBank = ({ language, setLanguage, projectId, showToast }) => {
         <div className="space-y-6 md:space-y-8 animate-in fade-in duration-700">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-4xl font-bold text-gradient mb-2">{currentT.title}</h1>
-                    <p className="text-muted font-light text-sm md:text-base leading-relaxed">{currentT.desc}</p>
+                    <h1 className="text-4xl md:text-5xl font-bold text-gradient mb-2">{currentT.title}</h1>
+                    <p className="text-muted font-light text-base md:text-lg leading-relaxed">{currentT.desc}</p>
                 </div>
                 {!isAdding && (
                     <button
@@ -253,7 +253,7 @@ const VocabBank = ({ language, setLanguage, projectId, showToast }) => {
             </div>
 
             {/* Vocab List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-10">
                 {loading ? (
                     <div className="col-span-full py-20 flex flex-col items-center justify-center space-y-4 text-muted">
                         <Loader2 className="w-10 h-10 animate-spin text-accent-primary opacity-50" />

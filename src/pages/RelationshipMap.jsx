@@ -367,7 +367,7 @@ const RelationshipMap = ({ projectId, language, showToast }) => {
 
                         {/* Character Details Sidebar */}
                         {selectedNode && (
-                            <div className="absolute top-6 right-6 bottom-6 w-80 glass-card bg-white/95 backdrop-blur-3xl border border-white/40 shadow-2xl z-20 animate-in slide-in-from-right duration-500 overflow-y-auto p-8 border-l-4 border-l-accent-primary">
+                            <div className="absolute top-4 right-4 bottom-4 md:top-6 md:right-6 md:bottom-6 w-[calc(100%-2rem)] md:w-80 glass-card bg-white/95 backdrop-blur-3xl border border-white/40 shadow-2xl z-20 animate-in slide-in-from-right duration-500 overflow-y-auto p-6 md:p-8 border-l-4 border-l-accent-primary">
                                 <button
                                     onClick={() => setSelectedNode(null)}
                                     className="absolute top-6 right-6 p-2 rounded-xl hover:bg-black/5 text-muted transition-colors"

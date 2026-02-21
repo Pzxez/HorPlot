@@ -176,7 +176,7 @@ const Navbar = ({ activeTab, setActiveTab, language, setLanguage, selectedProjec
             {/* Mobile Sidebar Navigation */}
             <div className={`fixed inset-0 z-[100] transition-opacity duration-300 ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
                 <div className="absolute inset-0 bg-slate-900/10 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)} />
-                <aside className={`absolute right-0 top-0 h-full w-80 bg-[var(--bg-mesh-4)] border-l border-glass-stroke shadow-2xl transition-transform duration-500 flex flex-col ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                <aside className={`absolute right-0 top-0 h-full w-full max-w-xs bg-[var(--bg-mesh-4)] border-l border-glass-stroke shadow-2xl transition-transform duration-500 flex flex-col ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
                     <div className="p-8 flex items-center justify-between border-b border-glass-stroke bg-white/5">
                         <h2 className="text-xl font-bold text-gradient uppercase tracking-widest">Navigation</h2>
                         <button onClick={() => setIsMenuOpen(false)} className="p-2 rounded-xl hover:bg-white/10 text-muted">

@@ -15,20 +15,20 @@ const Timeline = ({ language, projectId, showToast }) => {
     const t = {
         TH: {
             title: 'เส้นเรื่อง (Timeline)',
-            desc: 'ขัดเกลาจังหวะการไหลล่วงของเนื้อเรื่องมหากาพย์ของคุณ',
-            newBtn: 'จังหวะใหม่ (Beat)',
+            desc: 'วางแผนเส้นเรื่องนิยายของคุณ',
+            newBtn: 'เส้นเรื่องใหม่ (New Timeline)',
             loading: 'กำลังจัดเรียงเส้นเรื่อง...',
             annotations: 'หมายเหตุ',
-            save: 'บันทึกจังหวะ',
+            save: 'บันทึกเส้นเรื่อง',
             cancel: 'ยกเลิก',
             titlePlaceholder: 'ชื่อเหตุการณ์...',
             descPlaceholder: 'เกิดอะไรขึ้นในตอนนี้...',
             annotationsPlaceholder: 'บันทึกหรือหมายเหตุเพิ่มเติม (ถ้ามี)...',
             typeLabel: 'ความสำคัญ',
-            confirmDelete: 'ยืนยันการลบจังหวะนี้?',
-            successAdd: 'เพิ่มจังหวะใหม่แล้ว',
-            successUpdate: 'แก้ไขจังหวะเรียบร้อยแล้ว',
-            successDelete: 'ลบจังหวะเรียบร้อยแล้ว',
+            confirmDelete: 'ยืนยันการลบเส้นเรื่องนี้?',
+            successAdd: 'เพิ่มเส้นเรื่องใหม่แล้ว',
+            successUpdate: 'แก้ไขเส้นเรื่องเรียบร้อยแล้ว',
+            successDelete: 'ลบเส้นเรื่องเรียบร้อยแล้ว',
             error: 'เกิดข้อผิดพลาด กรุณาลองใหม่',
             types: [
                 { value: 'Plot Point', label: 'Plot Point' },
@@ -43,21 +43,21 @@ const Timeline = ({ language, projectId, showToast }) => {
             ]
         },
         EN: {
-            title: 'Plot Arc',
-            desc: 'Sculpt the temporal flow of your grand opus.',
-            newBtn: 'New Beat',
-            loading: 'Orchestrating the timeline...',
+            title: 'Timeline',
+            desc: 'Plan your story timeline',
+            newBtn: 'New Timeline',
+            loading: 'Organizing timeline...',
             annotations: 'annotations',
-            save: 'Save Beat',
+            save: 'Save Timeline',
             cancel: 'Cancel',
             titlePlaceholder: 'Event title...',
             descPlaceholder: 'What happens here...',
             annotationsPlaceholder: 'Additional notes or findings...',
             typeLabel: 'Significance',
-            confirmDelete: 'Are you sure you want to delete this beat?',
-            successAdd: 'Plot beat added',
-            successUpdate: 'Plot beat updated',
-            successDelete: 'Plot beat removed',
+            confirmDelete: 'Confirm delete this timeline?',
+            successAdd: 'New timeline added',
+            successUpdate: 'Timeline updated',
+            successDelete: 'Timeline removed',
             error: 'An error occurred',
             types: [
                 { value: 'Plot Point', label: 'Plot Point' },
@@ -211,10 +211,10 @@ const Timeline = ({ language, projectId, showToast }) => {
             )}
 
             {/* Timeline Scroll Container */}
-            <div className="glass-card p-6 md:p-16 min-h-[400px] md:min-h-[550px] flex items-center overflow-x-auto relative scroll-smooth group border-transparent shadow-none bg-black/5 rounded-[2.5rem]">
+            <div className="glass-card p-4 md:p-16 min-h-[400px] md:min-h-[550px] flex items-center overflow-x-auto relative scroll-smooth group border-transparent shadow-none bg-black/5 rounded-[2rem] md:rounded-[2.5rem]">
                 <div className="absolute left-6 right-6 md:left-16 md:right-16 h-1 bg-gradient-to-r from-accent-primary/10 via-accent-primary/40 to-accent-primary/10 top-1/2 -translate-y-1/2 rounded-full hidden md:block" />
 
-                <div className="flex flex-col md:flex-row md:space-x-16 space-y-8 md:space-y-0 relative z-10 w-full md:w-auto">
+                <div className="flex flex-col md:flex-row md:space-x-12 space-y-8 md:space-y-0 relative z-10 w-full md:w-auto">
                     {loading ? (
                         <div className="w-full flex items-center justify-center space-x-4 text-muted py-20">
                             <Loader2 className="w-8 h-8 animate-spin" />
@@ -223,7 +223,7 @@ const Timeline = ({ language, projectId, showToast }) => {
                     ) : (
                         <>
                             {plotPoints.map((point, idx) => (
-                                <div key={point.id || idx} className={`flex md:flex-col items-center w-full md:w-80 shrink-0 gap-6 md:gap-0 relative ${editingId === point.id ? 'z-[60]' : 'z-10'}`}>
+                                <div key={point.id || idx} className={`flex md:flex-col items-center w-full md:w-[320px] shrink-0 gap-6 md:gap-0 relative ${editingId === point.id ? 'z-[60]' : 'z-10'}`}>
                                     {/* Point Indicator */}
                                     <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full border-[4px] md:border-[6px] border-[var(--bg-mesh-4)] flex items-center justify-center mb-0 md:mb-10 relative z-20 transition-all duration-500 transform md:group-hover:scale-110 shrink-0 ${point.status === 'completed' ? 'bg-accent-primary shadow-[0_0_20px_rgba(129,140,248,0.3)]' :
                                         point.status === 'in-progress' ? 'bg-accent-secondary animate-pulse' : 'bg-slate-200'
@@ -328,7 +328,7 @@ const Timeline = ({ language, projectId, showToast }) => {
                             ))}
 
                             {/* Add New Button on Timeline */}
-                            <div className="flex flex-col items-center w-full md:w-80 shrink-0 justify-center py-6 md:py-0">
+                            <div className="flex flex-col items-center w-full md:w-[320px] shrink-0 justify-center py-6 md:py-0">
                                 <button
                                     onClick={() => {
                                         setIsAdding(true);

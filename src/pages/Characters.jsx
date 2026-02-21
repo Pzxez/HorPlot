@@ -14,7 +14,7 @@ const Characters = ({ language, projectId, showToast }) => {
     const t = {
         TH: {
             title: 'ข้อมูลตัวละคร',
-            desc: 'ออกแบบตัวละครเพื่อเติมเต็มจิตวิญญาณในเรื่องราวของคุณ',
+            desc: 'ออกแบบตัวละครในเรื่องราวของคุณ',
             newBtn: 'เพิ่มตัวละครใหม่',
             search: 'ค้นหาตัวละคร...',
             refine: 'กรอง',
@@ -156,21 +156,21 @@ const Characters = ({ language, projectId, showToast }) => {
                                 value={newChar.description}
                                 onChange={e => setNewChar({ ...newChar, description: e.target.value })}
                                 placeholder={currentT.descPlaceholder}
-                                className="w-full bg-white/5 border border-glass-stroke rounded-2xl py-4 px-6 focus:outline-none focus:ring-2 focus:ring-accent-primary/50 min-h-[120px] md:min-h-[140px] font-light"
+                                className="w-full bg-white/5 border border-glass-stroke rounded-2xl py-4 px-6 focus:outline-none focus:ring-2 focus:ring-accent-primary/50 min-h-[140px] md:min-h-[160px] font-light"
                             />
                         </div>
                         <div className="md:col-span-2 flex flex-col-reverse md:flex-row justify-end gap-4 pt-4 border-t border-glass-stroke">
                             <button
                                 type="button"
                                 onClick={() => setIsAdding(false)}
-                                className="flex items-center justify-center space-x-2 px-8 py-4 rounded-2xl hover:bg-white/5 transition-all text-muted font-bold"
+                                className="w-full md:w-auto flex items-center justify-center space-x-2 px-8 py-4 rounded-2xl hover:bg-white/5 transition-all text-muted font-bold"
                             >
                                 <X className="w-5 h-5" />
                                 <span>{currentT.cancel}</span>
                             </button>
                             <button
                                 type="submit"
-                                className="flex items-center justify-center space-x-2 bg-accent-primary text-white px-10 py-4 rounded-2xl hover:bg-accent-primary/80 transition-all shadow-lg shadow-accent-primary/20 font-bold"
+                                className="w-full md:w-auto flex items-center justify-center space-x-2 bg-accent-primary text-white px-10 py-4 rounded-2xl hover:bg-accent-primary/80 transition-all shadow-lg shadow-accent-primary/20 font-bold"
                             >
                                 <Check className="w-5 h-5" />
                                 <span>{currentT.save}</span>
@@ -196,7 +196,7 @@ const Characters = ({ language, projectId, showToast }) => {
             </div>
 
             {/* Character Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 pb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 pb-10">
                 {loading ? (
                     <div className="col-span-full py-20 flex flex-col items-center justify-center space-y-6 text-muted font-light italic text-xl">
                         <Loader2 className="w-10 h-10 animate-spin text-accent-primary opacity-50" />

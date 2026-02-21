@@ -83,9 +83,9 @@ const Auth = () => {
                     <p className="text-muted font-bold tracking-wide italic">หอพักนักเขียน</p>
                 </div>
 
-                <div className="glass-card p-8 md:p-10 bg-white/30 backdrop-blur-3xl saturate-150 border-white/40 shadow-2xl">
+                <div className="glass-card p-6 md:p-10 bg-white/30 backdrop-blur-3xl saturate-150 border-white/40 shadow-2xl">
                     {/* Mode Toggle */}
-                    <div className="flex mb-8 bg-black/5 rounded-2xl p-1 relative z-10">
+                    <div className="flex mb-6 md:mb-8 bg-black/5 rounded-2xl p-1 relative z-10">
                         <button
                             onClick={() => setIsLogin(true)}
                             className={`flex-1 py-3 text-sm font-semibold rounded-xl transition-all duration-300 ${isLogin ? 'bg-white text-accent-primary shadow-sm scale-[1.02]' : 'text-muted hover:text-accent-primary'}`}
@@ -101,7 +101,7 @@ const Auth = () => {
                     </div>
 
                     {/* Social Login Section */}
-                    <div className="grid grid-cols-2 gap-4 mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                         <button
                             onClick={handleGoogleSignIn}
                             className="flex items-center justify-center space-x-3 bg-white/40 hover:bg-white/60 border border-white/50 py-3.5 rounded-2xl transition-all active:scale-[0.98] group"
@@ -135,7 +135,7 @@ const Auth = () => {
                         <div className="flex-grow border-t border-muted/10"></div>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
                         <div className="relative group">
                             <label className="text-xs font-semibold uppercase tracking-widest text-muted/60 mb-2 block ml-1">
                                 อีเมล
@@ -147,7 +147,7 @@ const Auth = () => {
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full bg-white/20 border border-white/40 rounded-2xl py-4 pl-12 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all placeholder:text-muted/40"
+                                    className="w-full bg-white/20 border border-white/40 rounded-2xl py-3.5 md:py-4 pl-12 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all placeholder:text-muted/40"
                                     placeholder="your@email.com"
                                 />
                             </div>
@@ -164,7 +164,7 @@ const Auth = () => {
                                     required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full bg-white/20 border border-white/40 rounded-2xl py-4 pl-12 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all placeholder:text-muted/40"
+                                    className="w-full bg-white/20 border border-white/40 rounded-2xl py-3.5 md:py-4 pl-12 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all placeholder:text-muted/40"
                                     placeholder="••••••••"
                                 />
                             </div>
@@ -180,14 +180,14 @@ const Auth = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-accent-primary to-accent-secondary text-white py-5 rounded-2xl font-semibold shadow-lg shadow-accent-primary/25 hover:shadow-xl hover:shadow-accent-primary/35 transition-all active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100 flex items-center justify-center space-x-3"
+                            className="w-full bg-gradient-to-r from-accent-primary to-accent-secondary text-white py-4 md:py-5 rounded-2xl font-semibold shadow-lg shadow-accent-primary/25 hover:shadow-xl hover:shadow-accent-primary/35 transition-all active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100 flex items-center justify-center space-x-3"
                         >
                             {loading ? (
                                 <Loader2 className="w-6 h-6 animate-spin" />
                             ) : (
                                 <>
                                     {isLogin ? <LogIn className="w-6 h-6" /> : <UserPlus className="w-6 h-6" />}
-                                    <span className="tracking-wide">{isLogin ? 'เริ่มต้นใช้งาน' : 'ยืนยันการสมัครสมาชิก'}</span>
+                                    <span className="tracking-wide text-sm md:text-base">{isLogin ? 'เริ่มต้นใช้งาน' : 'ยืนยันการสมัครสมาชิก'}</span>
                                 </>
                             )}
                         </button>

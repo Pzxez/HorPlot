@@ -15,7 +15,7 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
     const t = {
         TH: {
             title: 'เลือกนิยายของคุณ',
-            desc: 'เลือกเรื่องที่คุณต้องการสานต่อ หรือเริ่มต้นมหากาพย์บทใหม่',
+            desc: 'เลือกเรื่องที่คุณต้องการสานต่อ หรือเริ่มต้นนิยายเรื่องใหม่',
             newBtn: 'สร้างนิยายเรื่องใหม่',
             selectBtn: 'เลือกเขียนเรื่องนี้',
             createTitle: 'ตั้งชื่อนิยายใหม่',
@@ -123,19 +123,19 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
 
     return (
         <div className="space-y-12 animate-in fade-in duration-1000">
-            <header className="flex items-center justify-between flex-wrap gap-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-5xl font-black text-gradient mb-4">{currentT.title}</h1>
-                    <p className="text-muted text-xl font-light">{currentT.desc}</p>
+                    <h1 className="text-4xl md:text-5xl font-black text-gradient mb-3 md:mb-4">{currentT.title}</h1>
+                    <p className="text-muted text-lg md:text-xl font-light">{currentT.desc}</p>
                 </div>
                 <button
                     onClick={() => setIsAdding(true)}
-                    className="flex items-center space-x-3 bg-accent-primary hover:bg-accent-primary/80 text-white px-8 py-4 rounded-2xl transition-all shadow-xl shadow-accent-primary/20 active:scale-95 font-bold"
+                    className="flex items-center justify-center space-x-3 bg-accent-primary hover:bg-accent-primary/80 text-white px-8 py-4 rounded-2xl transition-all shadow-xl shadow-accent-primary/20 active:scale-95 font-bold w-full md:w-auto"
                 >
                     <Plus className="w-6 h-6" />
                     <span>{currentT.newBtn}</span>
                 </button>
-            </header>
+            </div>
 
             {loading ? (
                 <div className="py-24 flex flex-col items-center justify-center space-y-6 text-muted">
@@ -143,7 +143,7 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
                     <p className="text-2xl font-light italic">{currentT.loading}</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
                     {projects.map((project) => (
                         <div
                             key={project.id}
@@ -212,14 +212,14 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
             {isAdding && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
                     <div className="absolute inset-0 bg-slate-900/10 backdrop-blur-md" onClick={() => { setIsAdding(false); setEditingProject(null); setNewTitle(''); }} />
-                    <div className="glass-card w-full max-w-xl p-12 relative z-10 border-white/40 shadow-2xl animate-in zoom-in-95 duration-300 bg-white/80">
-                        <header className="flex items-center justify-between mb-10">
-                            <h2 className="text-3xl font-bold">{editingProject ? currentT.editTitle : currentT.createTitle}</h2>
+                    <div className="glass-card w-full max-w-xl p-8 md:p-12 relative z-10 border-white/40 shadow-2xl animate-in zoom-in-95 duration-300 bg-white/80">
+                        <header className="flex items-center justify-between mb-8 md:mb-10">
+                            <h2 className="text-2xl md:text-3xl font-bold">{editingProject ? currentT.editTitle : currentT.createTitle}</h2>
                             <button onClick={() => { setIsAdding(false); setEditingProject(null); setNewTitle(''); }} className="p-2 hover:bg-black/5 rounded-xl transition-colors">
                                 <X className="w-6 h-6 text-muted" />
                             </button>
                         </header>
-                        <form onSubmit={handleSave} className="space-y-8">
+                        <form onSubmit={handleSave} className="space-y-6 md:space-y-8">
                             <div className="space-y-3">
                                 <label className="text-xs font-black uppercase tracking-[0.3em] text-accent-primary pl-1">
                                     {editingProject ? currentT.editTitle : currentT.createTitle}
@@ -230,21 +230,21 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
                                     value={newTitle}
                                     onChange={e => setNewTitle(e.target.value)}
                                     placeholder={currentT.placeholder}
-                                    className="w-full bg-white/40 border border-glass-stroke rounded-3xl py-6 px-8 focus:outline-none focus:ring-4 focus:ring-accent-primary/20 text-2xl font-bold transition-all"
+                                    className="w-full bg-white/40 border border-glass-stroke rounded-3xl py-4 md:py-6 px-6 md:px-8 focus:outline-none focus:ring-4 focus:ring-accent-primary/20 text-xl md:text-2xl font-bold transition-all"
                                 />
                             </div>
-                            <div className="flex space-x-4 pt-4">
+                            <div className="flex flex-col-reverse md:flex-row gap-4 pt-4">
                                 <button
                                     type="button"
                                     onClick={() => { setIsAdding(false); setEditingProject(null); setNewTitle(''); }}
-                                    className="flex-1 py-5 rounded-2xl hover:bg-white/5 transition-all text-muted font-black uppercase tracking-widest"
+                                    className="w-full md:flex-1 py-4 md:py-5 rounded-2xl hover:bg-white/5 transition-all text-muted font-black uppercase tracking-widest"
                                 >
                                     {currentT.cancel}
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={isSaving}
-                                    className="flex-1 bg-accent-primary text-white py-5 rounded-2xl hover:bg-accent-primary/80 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl shadow-accent-primary/40 transition-all font-black uppercase tracking-widest flex items-center justify-center space-x-3"
+                                    className="w-full md:flex-1 bg-accent-primary text-white py-4 md:py-5 rounded-2xl hover:bg-accent-primary/80 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl shadow-accent-primary/40 transition-all font-black uppercase tracking-widest flex items-center justify-center space-x-3"
                                 >
                                     {isSaving ? (
                                         <Loader2 className="w-6 h-6 animate-spin" />
@@ -263,15 +263,15 @@ const Dashboard = ({ language, onSelectProject, selectedProjectId, showToast }) 
             {deleteConfirm && (
                 <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 animate-in fade-in zoom-in duration-300">
                     <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl" onClick={() => setDeleteConfirm(null)} />
-                    <div className="glass-card w-full max-w-md p-10 relative z-10 border-white/20 shadow-2xl bg-white/95 text-center space-y-8">
-                        <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto">
-                            <Trash2 className="w-10 h-10 text-red-500" />
+                    <div className="glass-card w-full max-w-md p-8 md:p-10 relative z-10 border-white/20 shadow-2xl bg-white/95 text-center space-y-6 md:space-y-8">
+                        <div className="w-16 h-16 md:w-20 md:h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto">
+                            <Trash2 className="w-8 h-8 md:w-10 md:h-10 text-red-500" />
                         </div>
                         <div className="space-y-2">
-                            <h3 className="text-2xl font-black text-slate-900">
+                            <h3 className="text-xl md:text-2xl font-black text-slate-900">
                                 {language === 'TH' ? 'ยืนยันการลบ?' : 'Are you sure?'}
                             </h3>
-                            <p className="text-muted font-medium">
+                            <p className="text-sm md:text-base text-muted font-medium">
                                 {language === 'TH'
                                     ? `คุณแน่ใจหรือไม่ว่าต้องการลบ "${deleteConfirm.title}"? ขั้นตอนนี้ไม่สามารถย้อนกลับได้`
                                     : `Delete "${deleteConfirm.title}"? This action is permanent and threads will be lost forever.`}
